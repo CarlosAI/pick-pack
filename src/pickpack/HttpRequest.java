@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import org.json.JSONObject;
 import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -51,26 +52,28 @@ public class HttpRequest {
 
         int responseCode = con.getResponseCode();
         System.out.println("\nSending 'POST' request to URL : " + url_final);
-        System.out.println("Response Code : " + responseCode);
+//        System.out.println("Response Code : " + responseCode);
 
         BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
         String inputLine;
         StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
-             response.append(inputLine);
+            response.append(inputLine);
         }
         in.close();
 
         //print result
         System.out.println(response.toString());
-//        JSONObject res = new JSONObject(response.toString());
+        JSONObject res = new JSONObject(response.toString());
+//        System.out.println("response es " + res.getString("result"));
+        String resultado = res.getString("result");
         String res2[] = new String[2];
-        res2[0] = String.valueOf(responseCode);
-        if(responseCode == 200){
-            res2[1] = "token";
+        res2[0] = resultado;
+        if("200".equals(resultado)){
+            res2[1] = res.getString("seller_name");
         }else{
-            res2[1] = "Usuario/clave invalido";
+            res2[1] = res.getString("status");
         }
         return res2;
     }
