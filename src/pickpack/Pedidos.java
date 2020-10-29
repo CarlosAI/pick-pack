@@ -5,6 +5,7 @@ package pickpack;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
@@ -12,7 +13,7 @@ import org.json.JSONObject;
 
 public class Pedidos extends javax.swing.JFrame {
     
-    String titles[] = {"Seller", "Tipo Envio", "Canal", "# Orden", "Orden Marketful", "Descripcion", "Seller SKU", "Cantidad Anunciada", "Cantidad Surtida", "Posicion", "Registrar", "Calcular"};
+    String titles[] = {"#","Seller", "Tipo Envio", "Canal", "# Orden", "Orden Marketful", "Descripcion", "Seller SKU", "Cantidad Anunciada", "Cantidad Surtida", "Posicion", "", ""};
     DefaultTableModel model = new DefaultTableModel();
     HttpRequest request = new HttpRequest();
 
@@ -24,13 +25,17 @@ public class Pedidos extends javax.swing.JFrame {
     }
     
     public final void setTable(){
-         model = new DefaultTableModel(null,titles){
+        model = new DefaultTableModel(null,titles){
             @Override
             public boolean isCellEditable(int row, int column){
                 return false;
             }
         };
+        JButton btn1 = new JButton("Registrar");
+        JButton btn2 = new JButton("Calcular");
         tableData.setModel(model);
+        tableData.setDefaultRenderer(Object.class, new Render());
+        tableData.setRowHeight(30);
         try {
             StringBuilder response = request.getPedidos();
             JSONObject res = new JSONObject(response.toString());
@@ -43,22 +48,23 @@ public class Pedidos extends javax.swing.JFrame {
 //            System.out.println(elemento.getString("seller_sku"));
             for (int i = 0; i < los_pedidos.length(); i++) {
                 JSONObject elemento = los_pedidos.getJSONObject(i);
-                Object row[] = new Object[12];
-                row[0] = elemento.getString("seller_name");
-                row[1] = elemento.getString("tipo_envio");
-                row[2] = elemento.getString("canal");
+                Object row[] = new Object[13];
+                row[0] = String.valueOf(i+1);
+                row[1] = elemento.getString("seller_name");
+                row[2] = elemento.getString("tipo_envio");
+                row[3] = elemento.getString("canal");
                 if("null".equals(elemento.getString("canal"))){
-                    row[2] = "Shopify";
+                    row[3] = "Shopify";
                 }
-                row[3] = elemento.getString("shopi_order_name");
-                row[4] = elemento.getString("shopi_order_id");
-                row[5] = elemento.getString("descripcion");
-                row[6] = elemento.getString("seller_sku");
-                row[7] = elemento.getString("cantidad_pedido");
-                row[8] = elemento.getString("cantidad_sacado");
-                row[9] = elemento.getString("posicion_1_name");
-                row[10] = "Registrar";
-                row[11] = "Calcular";             
+                row[4] = elemento.getString("shopi_order_name");
+                row[5] = elemento.getString("shopi_order_id");
+                row[6] = elemento.getString("descripcion");
+                row[7] = elemento.getString("seller_sku");
+                row[8] = elemento.getString("cantidad_pedido");
+                row[9] = elemento.getString("cantidad_sacado");
+                row[10] = elemento.getString("posicion_1_name");
+                row[11] = btn1;
+                row[12] = btn2;             
 //                model.addRow(new Object[]{ "wfw", "title1", "start", "stop", "pause", "status", "status", "status", "status", "status", "status" });
                 model.addRow(row);
             }
