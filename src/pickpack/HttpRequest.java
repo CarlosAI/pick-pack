@@ -28,20 +28,6 @@ public class HttpRequest {
         String url_final = url_base + "loginfe?username="+correo+"&password="+password;
 
         URL obj = new URL(url_final);
-//        Map<String,Object> params = new LinkedHashMap<>();
-//        params.put("username", correo);
-//        params.put("password", password);
-//        
-//        StringBuilder postData = new StringBuilder();
-//        for(Map.Entry<String, Object> param: params.entrySet()){
-//            if(postData.length() != 0){
-//                postData.append('&');
-//            }
-//            postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
-//            postData.append('=');
-//            postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8")); 
-//        }
-//        byte[] postDataBytes = postData.toString().getBytes();
         
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         
@@ -52,7 +38,6 @@ public class HttpRequest {
 
         int responseCode = con.getResponseCode();
         System.out.println("\nSending 'POST' request to URL : " + url_final);
-//        System.out.println("Response Code : " + responseCode);
 
         BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
         String inputLine;
@@ -63,10 +48,8 @@ public class HttpRequest {
         }
         in.close();
 
-        //print result
         System.out.println(response.toString());
         JSONObject res = new JSONObject(response.toString());
-//        System.out.println("response es " + res.getString("result"));
         String resultado = res.getString("result");
         String res2[] = new String[2];
         res2[0] = resultado;
@@ -76,5 +59,39 @@ public class HttpRequest {
             res2[1] = res.getString("status");
         }
         return res2;
+    }
+    
+    public StringBuilder getPedidos() throws Exception {
+
+        String url_final = url_base + "pedidos/get_pedidos";
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'GET' request to URL : " + url_final);
+
+        BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+//        System.out.println(response.toString());
+        JSONObject res = new JSONObject(response.toString());
+        String resultado = res.getString("pedidos");
+        String res2[] = new String[1];
+        res2[0] = resultado;
+       
+        return response;
     }
 }

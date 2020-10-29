@@ -2,27 +2,68 @@
 package pickpack;
 
 
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class Pedidos extends javax.swing.JFrame {
     
-    String titles[] = {"Seller", "Canal", "# Orden", "Orden Marketful", "Descripcion", "Seller SKU", "Cantidad Anunciada", "Cantidad Surtida", "Posicion", "Registrar", "Calcular"};
+    String titles[] = {"Seller", "Tipo Envio", "Canal", "# Orden", "Orden Marketful", "Descripcion", "Seller SKU", "Cantidad Anunciada", "Cantidad Surtida", "Posicion", "Registrar", "Calcular"};
     DefaultTableModel model = new DefaultTableModel();
+    HttpRequest request = new HttpRequest();
 
     public Pedidos() {
         initComponents();
-        model = new DefaultTableModel(null,titles){
+        this.setTitle("Pick & Pack");
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setTable();
+    }
+    
+    public final void setTable(){
+         model = new DefaultTableModel(null,titles){
             @Override
             public boolean isCellEditable(int row, int column){
                 return false;
             }
         };
         tableData.setModel(model);
-
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        for (int count = 1; count <= 10; count++) {
-            model.addRow(new Object[]{ "wfw", "title1", "start", "stop", "pause", "status", "status", "status", "status", "status", "status" });
+        try {
+            StringBuilder response = request.getPedidos();
+            JSONObject res = new JSONObject(response.toString());
+            JSONArray los_pedidos = res.getJSONArray("pedidos");
+            System.out.println(los_pedidos.length());
+            System.out.println(los_pedidos);
+            
+//            JSONObject elemento = los_pedidos.getJSONObject(0);
+//            System.out.println(elemento);
+//            System.out.println(elemento.getString("seller_sku"));
+            for (int i = 0; i < los_pedidos.length(); i++) {
+                JSONObject elemento = los_pedidos.getJSONObject(i);
+                Object row[] = new Object[12];
+                row[0] = elemento.getString("seller_name");
+                row[1] = elemento.getString("tipo_envio");
+                row[2] = elemento.getString("canal");
+                if("null".equals(elemento.getString("canal"))){
+                    row[2] = "Shopify";
+                }
+                row[3] = elemento.getString("shopi_order_name");
+                row[4] = elemento.getString("shopi_order_id");
+                row[5] = elemento.getString("descripcion");
+                row[6] = elemento.getString("seller_sku");
+                row[7] = elemento.getString("cantidad_pedido");
+                row[8] = elemento.getString("cantidad_sacado");
+                row[9] = elemento.getString("posicion_1_name");
+                row[10] = "Registrar";
+                row[11] = "Calcular";             
+//                model.addRow(new Object[]{ "wfw", "title1", "start", "stop", "pause", "status", "status", "status", "status", "status", "status" });
+                model.addRow(row);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
