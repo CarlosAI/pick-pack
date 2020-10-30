@@ -92,6 +92,7 @@ public class Pedidos extends javax.swing.JFrame {
     private void initComponents() {
 
         dialogEtiqueta = new javax.swing.JDialog();
+        jFileChooser1 = new javax.swing.JFileChooser();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -137,6 +138,7 @@ public class Pedidos extends javax.swing.JFrame {
         jTabbedPane1.addTab("Ver pedidos", jTabbedPane4);
         jTabbedPane1.addTab("Otro", jTabbedPane3);
 
+        userWelcome.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
         userWelcome.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         userWelcome.setText("Marketful");
 
@@ -206,7 +208,7 @@ public class Pedidos extends javax.swing.JFrame {
                             .addComponent(btnActualizarPedidos)
                             .addComponent(btnGenerarPdf))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE))
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE))
         );
 
         pack();
@@ -313,6 +315,7 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JButton btnGenerarPdf;
     private javax.swing.JDialog dialogEtiqueta;
     private javax.swing.JMenuItem donwloadPdf;
+    private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
