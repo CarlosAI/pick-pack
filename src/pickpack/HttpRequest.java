@@ -51,10 +51,11 @@ public class HttpRequest {
         System.out.println(response.toString());
         JSONObject res = new JSONObject(response.toString());
         String resultado = res.getString("result");
-        String res2[] = new String[2];
+        String res2[] = new String[3];
         res2[0] = resultado;
         if("200".equals(resultado)){
             res2[1] = res.getString("seller_name");
+            res2[2] = res.getString("lastName");
         }else{
             res2[1] = res.getString("status");
         }
@@ -113,7 +114,7 @@ public class HttpRequest {
     
     public String getStatusEtiquetas() throws Exception {
 
-        String url_final = url_base + "shopi_orders/status_informe_api?seller_id=3";
+        String url_final = url_base + "shopi_orders/status_informe_api?seller_id=3&informe=generar_etiquetas_pedidos";
 
         URL obj = new URL(url_final);
         
