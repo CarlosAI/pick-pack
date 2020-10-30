@@ -86,12 +86,92 @@ public class HttpRequest {
         }
         in.close();
 
-//        System.out.println(response.toString());
         JSONObject res = new JSONObject(response.toString());
         String resultado = res.getString("pedidos");
         String res2[] = new String[1];
         res2[0] = resultado;
        
         return response;
+    }
+    
+    public int setGenerarPedidos() throws Exception {
+
+        String url_final = url_base + "shopi_orders/generar_etiquetas_pedidos_api?seller_id=3";
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        return responseCode;
+    }
+    
+    public String getStatusEtiquetas() throws Exception {
+
+        String url_final = url_base + "shopi_orders/status_informe_api?seller_id=3";
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        String resultado = "error";
+        if(responseCode == 200){
+            System.out.println("\nSending 'GET' request to URL : " + url_final);
+            BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            JSONObject res = new JSONObject(response.toString());
+            resultado = res.getString("progreso");
+        }
+        return resultado;
+    }
+    
+    public String getPdfEtiquetas() throws Exception {
+
+        String url_final = url_base + "shopi_orders/traer_documento_api?seller_id=3";
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        String resultado = "error";
+        if(responseCode == 200){
+            System.out.println("\nSending 'GET' request to URL : " + url_final);
+            BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            JSONObject res = new JSONObject(response.toString());
+            resultado = res.getString("url");
+        }
+        return resultado;
     }
 }
