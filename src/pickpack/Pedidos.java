@@ -2,6 +2,7 @@
 package pickpack;
 
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -17,6 +18,7 @@ public class Pedidos extends javax.swing.JFrame {
     
     String titles[] = {"#","Seller", "Tipo Envio", "Canal", "# Orden", "Orden Marketful", "Descripcion", "Seller SKU", "Cantidad Anunciada", "Cantidad Surtida", "Posicion", "", ""};
     DefaultTableModel model = new DefaultTableModel();
+    File out = new File("prueba_etiquetas.pdf");
     HttpRequest request = new HttpRequest();
     public String url_etiquetas = null;
     public String user_name = "";
@@ -24,6 +26,7 @@ public class Pedidos extends javax.swing.JFrame {
     public Pedidos(String usuario) {
         this.user_name = usuario;
         initComponents();
+        progressBar.setVisible(false);
         if("none".equals(usuario)){
             userWelcome.setText("Ninguna Sesion Activa");
         }else{
@@ -102,6 +105,8 @@ public class Pedidos extends javax.swing.JFrame {
         userWelcome = new javax.swing.JLabel();
         btnActualizarPedidos = new javax.swing.JButton();
         btnGenerarPdf = new javax.swing.JButton();
+        progressBar = new javax.swing.JProgressBar();
+        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         serrarSesion = new javax.swing.JMenuItem();
@@ -157,6 +162,9 @@ public class Pedidos extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("Descargar PDF");
+        jButton1.setEnabled(false);
+
         jMenu1.setText("Archivo");
 
         serrarSesion.setText("Cerrar Sesion");
@@ -192,8 +200,12 @@ public class Pedidos extends javax.swing.JFrame {
                 .addComponent(btnActualizarPedidos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnGenerarPdf)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(userWelcome, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(userWelcome, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(progressBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -202,13 +214,14 @@ public class Pedidos extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(userWelcome)
-                        .addGap(27, 27, 27))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnActualizarPedidos)
-                            .addComponent(btnGenerarPdf))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnActualizarPedidos)
+                        .addComponent(btnGenerarPdf)
+                        .addComponent(jButton1)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE))
         );
 
         pack();
@@ -220,6 +233,7 @@ public class Pedidos extends javax.swing.JFrame {
     
     
     private void btnGenerarPdfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPdfActionPerformed
+        this.url_etiquetas = null;
         btnGenerarPdf.setEnabled(false);
         int respuestaEtiqueta = 500;
         try {
@@ -232,6 +246,8 @@ public class Pedidos extends javax.swing.JFrame {
         if(respuestaEtiqueta != 200){
             JOptionPane.showMessageDialog(dialogEtiqueta, "Ocurrio un Error al intentar Generar las Etiquetas, intentalo de nuevo", "Error", JOptionPane.ERROR_MESSAGE);
         }else{
+            progressBar.setValue(0);
+           progressBar.setVisible(true);
             newThread.start();
 //            try {
 //                TimeUnit.SECONDS.sleep(1);
@@ -245,11 +261,17 @@ public class Pedidos extends javax.swing.JFrame {
 
     private void donwloadPdfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_donwloadPdfActionPerformed
         // TODO add your handling code here:
-         JOptionPane.showMessageDialog(dialogEtiqueta, "Ningun Documento PDF Encontrado", "Error", JOptionPane.ERROR_MESSAGE);
+        if(this.url_etiquetas !=  null){
+            new Thread(new Download(this.url_etiquetas, this.out)).start();
+        }else{
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Ningun Documento PDF Encontrado", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_donwloadPdfActionPerformed
-     Thread newThread = new Thread(() -> {
+    
+    Thread newThread = new Thread(() -> {
         consultarStatusEtiquetas();
     });
+     
     public void consultarStatusEtiquetas(){
         String respesta_status = "error";
         System.out.println("Vamos a consultar status etiquetas");
@@ -266,6 +288,7 @@ public class Pedidos extends javax.swing.JFrame {
             if(progreso == 500){
                 JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 101 - Error al consultar el estatus.", "Error", JOptionPane.ERROR_MESSAGE);
             }else{
+                progressBar.setValue(progreso);
                 if(progreso < 100){
                     try {
                         TimeUnit.SECONDS.sleep(1);
@@ -292,7 +315,9 @@ public class Pedidos extends javax.swing.JFrame {
         }
         System.out.println("Respuesta pdf es :"+respuesta_pdf);
         if( !"null".equals(respuesta_pdf ) && !"error".equals(respuesta_pdf) ){
+            progressBar.setVisible(false);
             this.url_etiquetas = respuesta_pdf;
+            new Thread(new Download(this.url_etiquetas, this.out)).start();
 //            JOptionPane.showMessageDialog(dialogEtiqueta, "URL de Etiquetas es" + this.url_etiquetas, "Success", JOptionPane.INFORMATION_MESSAGE);
             btnGenerarPdf.setEnabled(true);
             donwloadPdf.setEnabled(true);
@@ -300,6 +325,7 @@ public class Pedidos extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 102 - Error al obtener el documento PDF de las etiquetas.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
     public static void main(String args[]) {
 
@@ -315,6 +341,7 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JButton btnGenerarPdf;
     private javax.swing.JDialog dialogEtiqueta;
     private javax.swing.JMenuItem donwloadPdf;
+    private javax.swing.JButton jButton1;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -325,6 +352,7 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JTabbedPane jTabbedPane4;
+    private javax.swing.JProgressBar progressBar;
     private javax.swing.JMenuItem serrarSesion;
     private javax.swing.JTable tableData;
     private javax.swing.JLabel userWelcome;
