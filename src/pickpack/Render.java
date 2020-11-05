@@ -5,6 +5,7 @@ package pickpack;
 import java.awt.Component;
 import javax.swing.JButton;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class Render extends DefaultTableCellRenderer {
@@ -14,6 +15,11 @@ public class Render extends DefaultTableCellRenderer {
         if(value instanceof JButton){
             JButton btn = (JButton)value;
             return btn;
+        }
+        
+        if(value instanceof JTextField){
+            JTextField txt = (JTextField)value;
+            return txt;
         }
         return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column); //To change body of generated methods, choose Tools | Templates.
     }

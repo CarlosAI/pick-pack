@@ -2,15 +2,23 @@
 package pickpack;
 
 
+import java.awt.Color;
+import java.awt.List;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -22,6 +30,10 @@ public class Pedidos extends javax.swing.JFrame {
     HttpRequest request = new HttpRequest();
     public String url_etiquetas = null;
     public String user_name = "";
+    JTextField textBox=new JTextField();
+    
+    ArrayList<String> lista = new ArrayList<>();
+    
 
     public Pedidos(String usuario) {
         this.user_name = usuario;
@@ -44,11 +56,19 @@ public class Pedidos extends javax.swing.JFrame {
         model = new DefaultTableModel(null,titles){
             @Override
             public boolean isCellEditable(int row, int column){
-                return false;
+                if(column == 11){
+                   return true;
+                }else{
+                   return false;
+                }
+                
             }
         };
         JButton btn1 = new JButton("Registrar");
+        btn1.setName("Registrar");
         JButton btn2 = new JButton("Calcular");
+        btn2.setName("calcular");
+        JTextField txt1 = new JTextField();
         tableData.setModel(model);
         tableData.setDefaultRenderer(Object.class, new Render());
         tableData.setRowHeight(30);
@@ -64,6 +84,7 @@ public class Pedidos extends javax.swing.JFrame {
 //            System.out.println(elemento.getString("seller_sku"));
             for (int i = 0; i < los_pedidos.length(); i++) {
                 JSONObject elemento = los_pedidos.getJSONObject(i);
+                lista.add(elemento.getString("id"));
                 Object row[] = new Object[13];
                 row[0] = String.valueOf(i+1);
                 row[1] = elemento.getString("seller_name");
@@ -79,7 +100,8 @@ public class Pedidos extends javax.swing.JFrame {
                 row[8] = elemento.getString("cantidad_pedido");
                 row[9] = elemento.getString("cantidad_sacado");
                 row[10] = elemento.getString("posicion_1_name");
-                row[11] = btn1;
+//                JTextField jt = new JTextField();
+                row[11] = "";
                 row[12] = btn2;             
 //                model.addRow(new Object[]{ "wfw", "title1", "start", "stop", "pause", "status", "status", "status", "status", "status", "status" });
                 model.addRow(row);
@@ -88,7 +110,28 @@ public class Pedidos extends javax.swing.JFrame {
             Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
              JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 102 - Error al consultar los pedidos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+        TableColumn soprtColumn=tableData.getColumnModel().getColumn(11);
+        soprtColumn.setCellEditor(new DefaultCellEditor (textBox));
+        tableData.setCellSelectionEnabled(true);
+        
+        
+        textBox.addKeyListener(new KeyAdapter(){
+            public void keyTyped(KeyEvent e){
+                if(2 != 2){
+                    textBox.setEditable(false);
+                    textBox.setBackground(Color.WHITE);
+                    JOptionPane.showMessageDialog(null,"String Type Entry Not Allowed");
+                }else{
+                    textBox.setEditable(true);
+                    int column = tableData.getColumnModel().getColumnIndexAtX(textBox.getX());
+                    int row = textBox.getY()/tableData.getRowHeight();
+                    System.out.println("Typing in "+ row+ ","+column);
+                }
+            }
+        });
     }
+    
+//    public void() funcion actualizar posicion de pedido
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -135,6 +178,11 @@ public class Pedidos extends javax.swing.JFrame {
 
             }
         ));
+        tableData.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableDataMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tableData);
 
         jTabbedPane2.addTab("Pedidos Pendientes", jScrollPane1);
@@ -267,6 +315,22 @@ public class Pedidos extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(dialogEtiqueta, "Ningun Documento PDF Encontrado", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_donwloadPdfActionPerformed
+
+    private void tableDataMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableDataMouseClicked
+        int column = tableData.getColumnModel().getColumnIndexAtX(evt.getX());
+        int row = evt.getY()/tableData.getRowHeight();
+        
+        if(row < tableData.getRowCount() && row >= 0 && column < tableData.getColumnCount() && column >= 0 ){
+            Object value = tableData.getValueAt(row, column);
+            if(value instanceof JButton){
+                ((JButton)value).doClick();
+                JButton boton = (JButton) value;
+                if("calcular".equals(boton.getName())){
+                    System.out.println("Clic en btn calcular row: " + row + ", Column: "+column);
+                }
+            }
+        }
+    }//GEN-LAST:event_tableDataMouseClicked
     
     Thread newThread = new Thread(() -> {
         consultarStatusEtiquetas();
