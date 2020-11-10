@@ -51,11 +51,13 @@ public class HttpRequest {
         System.out.println(response.toString());
         JSONObject res = new JSONObject(response.toString());
         String resultado = res.getString("result");
-        String res2[] = new String[3];
+        String res2[] = new String[5];
         res2[0] = resultado;
         if("200".equals(resultado)){
             res2[1] = res.getString("seller_name");
             res2[2] = res.getString("lastName");
+            res2[3] = res.getString("token");
+            res2[4] = res.getString("id");
         }else{
             res2[1] = res.getString("status");
         }

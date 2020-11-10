@@ -132,7 +132,11 @@ public class Login extends javax.swing.JFrame {
             String respuesta[] = request.login(correo, clave);
             if("200".equals(respuesta[0]) && "Marketful".equals(respuesta[1])){
                 this.setVisible(false);
-                new Pedidos(respuesta[2]).setVisible(true);
+                Sesion sesion = new Sesion();
+                sesion.setSessionNombre(respuesta[2]);
+                sesion.setSessionToken(respuesta[3]);
+                sesion.setSessionUserId(Integer.parseInt(respuesta[4]));
+                new Pedidos(sesion).setVisible(true);
             }else{
                 JOptionPane.showMessageDialog(dialogLogin, "Mensaje: "+respuesta[1], "Error al iniciar Sesion", JOptionPane.ERROR_MESSAGE);
             }

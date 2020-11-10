@@ -2,6 +2,7 @@
 package pickpack;
 
 
+import com.placeholder.PlaceHolder;
 import java.awt.Color;
 import java.awt.List;
 import java.awt.event.KeyAdapter;
@@ -31,18 +32,23 @@ public class Pedidos extends javax.swing.JFrame {
     public String url_etiquetas = null;
     public String user_name = "";
     JTextField textBox=new JTextField();
+    Sesion sesion = new Sesion();
     
     ArrayList<String> lista = new ArrayList<>();
     
 
-    public Pedidos(String usuario) {
-        this.user_name = usuario;
+    public Pedidos(Sesion session) {
+        this.sesion = session;
+        System.out.println("Session Actual en Login");
+        System.out.println(sesion.getSessionToken());
+        System.out.println(sesion.getSessionUserName());
+        System.out.println(sesion.getSessionUserId());
         initComponents();
         progressBar.setVisible(false);
-        if("none".equals(usuario)){
+        if(this.sesion.getSessionUserName() == null){
             userWelcome.setText("Ninguna Sesion Activa");
         }else{
-            userWelcome.setText("Hola, " +this.user_name);
+            userWelcome.setText("Hola, " +this.sesion.getSessionUserName());
         }
 
         donwloadPdf.setEnabled(false);
@@ -112,7 +118,7 @@ public class Pedidos extends javax.swing.JFrame {
         }
         TableColumn soprtColumn=tableData.getColumnModel().getColumn(11);
         soprtColumn.setCellEditor(new DefaultCellEditor (textBox));
-        tableData.setCellSelectionEnabled(true);
+        tableData.setCellSelectionEnabled(false);
         
         
         textBox.addKeyListener(new KeyAdapter(){
@@ -123,6 +129,7 @@ public class Pedidos extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null,"String Type Entry Not Allowed");
                 }else{
                     textBox.setEditable(true);
+                    PlaceHolder holder = new PlaceHolder(textBox, "Seller SKU");
                     int column = tableData.getColumnModel().getColumnIndexAtX(textBox.getX());
                     int row = textBox.getY()/tableData.getRowHeight();
                     System.out.println("Typing in "+ row+ ","+column);
@@ -329,6 +336,12 @@ public class Pedidos extends javax.swing.JFrame {
                     System.out.println("Clic en btn calcular row: " + row + ", Column: "+column);
                 }
             }
+            
+//            if(value instanceof JTextField){
+//                JTextField texto = (JTextField) value;
+//                System.out.println("Clic en Texto row: " + row + ", Column: "+column);
+//                texto.grabFocus();
+//            }
         }
     }//GEN-LAST:event_tableDataMouseClicked
     
@@ -394,8 +407,9 @@ public class Pedidos extends javax.swing.JFrame {
     public static void main(String args[]) {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Pedidos("none").setVisible(true);
+            public void run(){
+                Sesion nS = new Sesion();
+                new Pedidos(nS).setVisible(true);
             }
         });
     }
