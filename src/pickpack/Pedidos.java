@@ -33,6 +33,12 @@ public class Pedidos extends javax.swing.JFrame {
     public String user_name = "";
     JTextField textBox=new JTextField();
     Sesion sesion = new Sesion();
+    String pedido_id = "";
+    Boolean es_consolidado = false;
+    Integer cantidad_pedido = 0;
+    Integer cantidad_anunciada = 0;
+    Integer cantidad_surtida = 0;
+    Boolean session_activa = false;
     
     ArrayList<String> lista = new ArrayList<>();
     
@@ -47,9 +53,17 @@ public class Pedidos extends javax.swing.JFrame {
         progressBar.setVisible(false);
         if(this.sesion.getSessionUserName() == null){
             userWelcome.setText("Ninguna Sesion Activa");
+             this.session_activa = false;
         }else{
             userWelcome.setText("Hola, " +this.sesion.getSessionUserName());
+            this.session_activa = true;
         }
+        sellerSKU.setEditable(false);
+        sellerSKU.setBackground(null);
+        sellerSKU.setBorder(null);
+        positionName.setEditable(false);
+        positionName.setBackground(null);
+        positionName.setBorder(null);
         PlaceHolder holder = new PlaceHolder(positionText, "Codigo Posicion");
         new PlaceHolder(skuText, "SKU/EAN");
         new PlaceHolder(orderText, "Order MKTF");
@@ -57,6 +71,13 @@ public class Pedidos extends javax.swing.JFrame {
         serrarSesion.setEnabled(false);
         cancelarSurtido.setEnabled(false);
         this.setTitle("Pick & Pack");
+        this.positionText.setEditable(false);
+        this.skuText.setEditable(false);
+        this.orderText.setEditable(false);
+        
+        this.positionText.setEnabled(false);
+        this.skuText.setEnabled(false);
+        this.orderText.setEnabled(false);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setTable();
     }
@@ -65,16 +86,16 @@ public class Pedidos extends javax.swing.JFrame {
         model = new DefaultTableModel(null,titles){
             @Override
             public boolean isCellEditable(int row, int column){
-                if(column == 11){
+                if(column == 10){
                    return true;
                 }else{
                    return false;
                 }
-                
+//                return false;
             }
         };
-        JButton btn1 = new JButton("Registrar");
-        btn1.setName("Registrar");
+        JButton btn1 = new JButton("Surtir");
+        btn1.setName("surtir_pedido");
         JButton btn2 = new JButton("Calcular");
         btn2.setName("calcular");
         JTextField txt1 = new JTextField();
@@ -110,7 +131,7 @@ public class Pedidos extends javax.swing.JFrame {
                 row[9] = elemento.getString("cantidad_sacado");
                 row[10] = elemento.getString("posicion_1_name");
 //                JTextField jt = new JTextField();
-                row[11] = "";
+                row[11] = btn1;
                 row[12] = btn2;             
 //                model.addRow(new Object[]{ "wfw", "title1", "start", "stop", "pause", "status", "status", "status", "status", "status", "status" });
                 model.addRow(row);
@@ -119,26 +140,26 @@ public class Pedidos extends javax.swing.JFrame {
             Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
              JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 102 - Error al consultar los pedidos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        TableColumn soprtColumn=tableData.getColumnModel().getColumn(11);
-        soprtColumn.setCellEditor(new DefaultCellEditor (textBox));
-        tableData.setCellSelectionEnabled(false);
-        
-        
-        textBox.addKeyListener(new KeyAdapter(){
-            public void keyTyped(KeyEvent e){
-                if(2 != 2){
-                    textBox.setEditable(false);
-                    textBox.setBackground(Color.WHITE);
-                    JOptionPane.showMessageDialog(null,"String Type Entry Not Allowed");
-                }else{
-                    textBox.setEditable(true);
-                    PlaceHolder holder = new PlaceHolder(textBox, "Seller SKU");
-                    int column = tableData.getColumnModel().getColumnIndexAtX(textBox.getX());
-                    int row = textBox.getY()/tableData.getRowHeight();
-                    System.out.println("Typing in "+ row+ ","+column);
-                }
-            }
-        });
+//        TableColumn soprtColumn=tableData.getColumnModel().getColumn(11);
+//        soprtColumn.setCellEditor(new DefaultCellEditor (textBox));
+//        tableData.setCellSelectionEnabled(false);
+//        
+//        
+//        textBox.addKeyListener(new KeyAdapter(){
+//            public void keyTyped(KeyEvent e){
+//                if(2 != 2){
+//                    textBox.setEditable(false);
+//                    textBox.setBackground(Color.WHITE);
+//                    JOptionPane.showMessageDialog(null,"String Type Entry Not Allowed");
+//                }else{
+//                    textBox.setEditable(true);
+//                    PlaceHolder holder = new PlaceHolder(textBox, "Seller SKU");
+//                    int column = tableData.getColumnModel().getColumnIndexAtX(textBox.getX());
+//                    int row = textBox.getY()/tableData.getRowHeight();
+//                    System.out.println("Typing in "+ row+ ","+column);
+//                }
+//            }
+//        });
     }
     
 //    public void() funcion actualizar posicion de pedido
@@ -155,20 +176,25 @@ public class Pedidos extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        numOrden = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
+        ordenMKTF = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
+        cantidadSurtida = new javax.swing.JLabel();
         positionText = new javax.swing.JTextField();
         skuText = new javax.swing.JTextField();
         orderText = new javax.swing.JTextField();
         cancelarSurtido = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        sellerSKU = new javax.swing.JTextPane();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        positionName = new javax.swing.JTextPane();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableData = new javax.swing.JTable();
         jTabbedPane4 = new javax.swing.JTabbedPane();
@@ -201,33 +227,57 @@ public class Pedidos extends javax.swing.JFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel1.setText("Pedido Actual:");
+        jLabel1.setText("Surtiendo el Pedido:");
 
         jLabel3.setText("# Orden:");
 
-        jLabel4.setText("#8443");
+        numOrden.setText("       ");
 
         jLabel5.setText("Orden MKTF:");
 
-        jLabel6.setText("23519");
+        ordenMKTF.setText("       ");
 
         jLabel2.setText("Seller SKU:");
-
-        jLabel8.setText("X002G1CB0T ");
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel10.setText("Surtiendo de Posicion:");
 
-        jLabel11.setText("S100B13B");
-
         jLabel12.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel12.setText("Cantidad Surtida:");
 
-        jLabel13.setText("1");
+        cantidadSurtida.setText("      ");
+
+        positionText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                positionTextKeyPressed(evt);
+            }
+        });
+
+        skuText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                skuTextKeyPressed(evt);
+            }
+        });
+
+        orderText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                orderTextKeyPressed(evt);
+            }
+        });
 
         cancelarSurtido.setText("Cancelar Surtido");
+
+        jScrollPane2.setViewportView(sellerSKU);
+
+        jScrollPane3.setViewportView(positionName);
+
+        jLabel4.setText("Scanea la posicion.");
+
+        jLabel6.setText("Scanea el producto");
+
+        jLabel7.setText("Scanea la orden");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -243,11 +293,11 @@ public class Pedidos extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(numOrden, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ordenMKTF, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -255,18 +305,30 @@ public class Pedidos extends javax.swing.JFrame {
                             .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(72, 72, 72))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(cantidadSurtida, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(72, 72, 72))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(58, 58, 58))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(17, 17, 17)
-                        .addComponent(positionText, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(positionText, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
                         .addGap(18, 18, 18)
-                        .addComponent(skuText, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(skuText, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6))
                         .addGap(18, 18, 18)
-                        .addComponent(orderText, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cancelarSurtido)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(orderText, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(cancelarSurtido)))
                         .addContainerGap())))
         );
         jPanel2Layout.setVerticalGroup(
@@ -279,26 +341,26 @@ public class Pedidos extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(jLabel4))
+                            .addComponent(numOrden))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
-                            .addComponent(jLabel6))
+                            .addComponent(ordenMKTF))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel8))
-                        .addGap(38, 38, 38))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(30, 30, 30))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel10)
-                                    .addComponent(jLabel11))
+                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel12)
-                                    .addComponent(jLabel13)))
+                                    .addComponent(cantidadSurtida)))
                             .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -306,7 +368,12 @@ public class Pedidos extends javax.swing.JFrame {
                     .addComponent(skuText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(orderText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cancelarSurtido))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         tableData.setModel(new javax.swing.table.DefaultTableModel(
@@ -320,6 +387,11 @@ public class Pedidos extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tableData.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableDataMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tableData);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -331,7 +403,7 @@ public class Pedidos extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 152, Short.MAX_VALUE))
+                        .addGap(0, 109, Short.MAX_VALUE))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
         );
@@ -474,10 +546,191 @@ public class Pedidos extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(dialogEtiqueta, "Ningun Documento PDF Encontrado", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_donwloadPdfActionPerformed
+
+    private void tableDataMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableDataMouseClicked
+        int column = tableData.getColumnModel().getColumnIndexAtX(evt.getX());	
+        int row = evt.getY()/tableData.getRowHeight();	
+        
+        int rec = this.tableData.getSelectedRow();
+       
+//        System.out.println( tableData.getValueAt( rec, tableData.getColumn("# Orden").getModelIndex() ));
+//        System.out.println("....");
+//        System.out.println(tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("# Orden").getModelIndex())));
+        
+        
+        if(row < tableData.getRowCount() && row >= 0 && column < tableData.getColumnCount() && column >= 0 ){	
+            Object value = tableData.getValueAt(row, column);	
+            if(value instanceof JButton){	
+                ((JButton)value).doClick();	
+                JButton boton = (JButton) value;	
+                if("calcular".equals(boton.getName())){	
+                    System.out.println("Clic en btn calcular row: " + row + ", Column: "+column);	
+                }	
+            }
+            
+            if(value instanceof JButton){	
+                ((JButton)value).doClick();	
+                JButton boton = (JButton) value;	
+                if("surtir_pedido".equals(boton.getName())){	
+                    String num_order = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("# Orden").getModelIndex())).toString();
+                    String order_mktf = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Orden Marketful").getModelIndex())).toString();
+                    String seller_sku = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Seller SKU").getModelIndex())).toString();
+                    String posicion = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Posicion").getModelIndex())).toString();
+                    String cantidad_surtida = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Cantidad Anunciada").getModelIndex())).toString();
+                    this.cantidad_anunciada = Integer.parseInt(cantidad_surtida);
+                    this.numOrden.setText(num_order);
+                    this.ordenMKTF.setText(order_mktf);
+                    this.sellerSKU.setText(seller_sku);
+                    this.cantidadSurtida.setText("0/"+cantidad_surtida);
+                    this.positionText.setEnabled(true);
+                    this.positionText.setEditable(true);
+                    this.positionText.requestFocus(true);
+                    this.pedido_id = this.lista.get(row);
+                    
+                }	
+            }
+            
+        }	
+    }//GEN-LAST:event_tableDataMouseClicked
+
+    private void positionTextKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_positionTextKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            verificarPosition();
+        }
+    }//GEN-LAST:event_positionTextKeyPressed
+
+    private void skuTextKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_skuTextKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            verificarSKUPedido();
+        }
+    }//GEN-LAST:event_skuTextKeyPressed
+
+    private void orderTextKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_orderTextKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            verificarTrackingPedido();
+        }
+    }//GEN-LAST:event_orderTextKeyPressed
     
     Thread newThread = new Thread(() -> {
         consultarStatusEtiquetas();
     });
+    
+    public void verificarPosition(){
+        String response[];
+        try {
+            response = request.verificarPositionName(this.positionText.getText(), this.pedido_id);
+            if("200".equals(response[0])){
+                this.es_consolidado = false;
+                if( Integer.parseInt(response[2]) > 0){
+                    this.cantidad_pedido = Integer.parseInt(response[2]);
+                    this.positionName.setText(this.positionText.getText());
+                    this.positionText.requestFocus(false);
+                    this.positionText.setEditable(false);
+                    this.positionText.setEnabled(false);
+                    
+                    this.skuText.setEnabled(true);
+                    this.skuText.setEditable(true);
+                    this.skuText.requestFocus(true);
+                }else{
+                    JOptionPane.showMessageDialog(dialogEtiqueta, "Este pedido ya fue surtido", "Alerta", JOptionPane.WARNING_MESSAGE);
+                }
+            }else if("201".equals(response[0])){
+                this.es_consolidado = true;
+                if( Integer.parseInt(response[2]) > 0){
+                    this.sellerSKU.requestFocus();
+                }else{
+                    JOptionPane.showMessageDialog(dialogEtiqueta, "Este pedido ya fue surtido", "Alerta", JOptionPane.WARNING_MESSAGE);
+                }
+            }else{
+                JOptionPane.showMessageDialog(dialogEtiqueta, response[1], "Alerta", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error interno al consultar la posicion.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    public void surtirPedido(){
+        String response;
+        try {
+            response = request.surtirPedido(this.cantidad_surtida, this.pedido_id, this.sesion.getSessionToken());
+            if("200".equals(response)){
+                JOptionPane.showMessageDialog(dialogEtiqueta, "Pedido Completado", "", JOptionPane.INFORMATION_MESSAGE);
+                this.orderText.setEnabled(false);
+                this.orderText.setEditable(false);
+                this.orderText.requestFocus(false);
+            }else if("201".equals(response)){
+                JOptionPane.showMessageDialog(dialogEtiqueta, "Esta orden tiene pedidos aun en BackOrders", "Alerta", JOptionPane.INFORMATION_MESSAGE);
+            }else{
+                JOptionPane.showMessageDialog(dialogEtiqueta, response, "Alerta", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error interno al surtir el pedido.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void verificarTrackingPedido(){
+        String response;
+        try {
+            response = request.verificarTrackingPedido(this.orderText.getText(), this.pedido_id);
+            if("200".equals(response)){
+                if(this.session_activa){
+                    surtirPedido();
+                }else{
+                    JOptionPane.showMessageDialog(dialogEtiqueta, "Debes iniciar Sesion para surtir pedidos", "Alerta", JOptionPane.WARNING_MESSAGE);
+                }
+            }else{
+                JOptionPane.showMessageDialog(dialogEtiqueta, response, "Alerta", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 202 - Error interno al surtir el pedido.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void verificarSKUPedido(){
+        String response[];
+        try {
+            if(this.es_consolidado){
+//                response = request.verificarPositionName(this.skuText.getText(), this.pedido_id);
+//                if("200".equals(response[0])){
+//                    this.es_consolidado = false;
+//                    this.positionName.setText(this.positionText.getText());
+//                    this.positionText.requestFocus(false);
+//                    this.positionText.setEditable(false);
+//                    this.skuText.requestFocus(true);
+//
+//                }else{
+//                    JOptionPane.showMessageDialog(dialogEtiqueta, response[1], "Alerta", JOptionPane.WARNING_MESSAGE);
+//                }
+            }else{
+                response = request.verificarSKUPedido(this.skuText.getText(), this.pedido_id);
+                if("200".equals(response[0])){
+                    this.cantidad_surtida = this.cantidad_surtida + 1;
+                    this.cantidadSurtida.setText(this.cantidad_surtida+"/"+this.cantidad_pedido);
+                    if(this.cantidad_surtida == this.cantidad_anunciada){
+                        this.skuText.setEnabled(false);
+                        this.skuText.setEditable(false);
+                        this.skuText.requestFocus(false);
+                    
+                        this.orderText.setEnabled(true);
+                        this.orderText.setEditable(true);
+                        this.orderText.requestFocus(true);
+                    }else{
+                        this.skuText.setText("");
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(dialogEtiqueta, response[1], "Alerta", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+           
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error interno al consultar el sku.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
      
     public void consultarStatusEtiquetas(){
         String respesta_status = "error";
@@ -548,21 +801,20 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JButton btnActualizarPedidos;
     private javax.swing.JButton btnGenerarPdf;
     private javax.swing.JButton cancelarSurtido;
+    private javax.swing.JLabel cantidadSurtida;
     private javax.swing.JDialog dialogEtiqueta;
     private javax.swing.JMenuItem donwloadPdf;
     private javax.swing.JButton jButton1;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -570,14 +822,20 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JTabbedPane jTabbedPane4;
+    private javax.swing.JLabel numOrden;
+    private javax.swing.JLabel ordenMKTF;
     private javax.swing.JTextField orderText;
+    private javax.swing.JTextPane positionName;
     private javax.swing.JTextField positionText;
     private javax.swing.JProgressBar progressBar;
+    private javax.swing.JTextPane sellerSKU;
     private javax.swing.JMenuItem serrarSesion;
     private javax.swing.JTextField skuText;
     private javax.swing.JTable tableData;
