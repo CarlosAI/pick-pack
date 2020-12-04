@@ -494,4 +494,37 @@ public class HttpRequest {
         }
         return resultado;
     }
+    
+    public String cambiarPosicion(String pedido_id) throws Exception {
+
+        String url_final = url_base + "pedidos/actualizar_posiciones_api?pedido_id="+pedido_id;
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        String resultado = "400";
+        if(responseCode == 200){
+            System.out.println("\nSending 'GET' request to URL : " + url_final);
+            BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            JSONObject res = new JSONObject(response.toString());
+            System.out.println(res);
+            resultado = res.getString("result");
+        }
+        return resultado;
+    }
 }

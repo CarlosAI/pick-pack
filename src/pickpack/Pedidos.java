@@ -70,6 +70,7 @@ public class Pedidos extends javax.swing.JFrame {
         PlaceHolder holder = new PlaceHolder(positionText, "Codigo Posicion");
         new PlaceHolder(skuText, "SKU/EAN");
         new PlaceHolder(orderText, "Order MKTF");
+        
         donwloadPdf.setEnabled(false);
         serrarSesion.setEnabled(false);
         cancelarSurtido.setEnabled(false);
@@ -91,13 +92,17 @@ public class Pedidos extends javax.swing.JFrame {
 //        System.out.println("la columna es" +la_columna);
 //        tableData.getColumnModel().getColumn(la_columna).setCellRenderer(c);
 //        tableData
-        
 //        int la_columna2 = tableData.convertColumnIndexToView(tableData.getColumn("Calcular").getModelIndex());
 //        tableData.getColumnModel().getColumn(la_columna2).setCellRenderer(c);
-//        tableData = new ColorCelda();
+//        int la_column1 = tableData.convertColumnIndexToView(tableData.getColumn("Surtir").getModelIndex());
+//        tableData.getColumnModel().getColumn(0).setCellRenderer(c);
+        for (int i = 0; i <= 12; i++) {
+            tableData.getColumnModel().getColumn(i).setCellRenderer(c);
+        }
     }
     
     public final void setTable(){
+        lista.clear();
         model = new DefaultTableModel(null,titles){
             @Override
             public boolean isCellEditable(int row, int column){
@@ -150,6 +155,9 @@ public class Pedidos extends javax.swing.JFrame {
                 row[12] = btn2;             
 //                model.addRow(new Object[]{ "wfw", "title1", "start", "stop", "pause", "status", "status", "status", "status", "status", "status" });
                 model.addRow(row);
+            }
+            for (int i = 0; i <= 12; i++) {
+                tableData.getColumnModel().getColumn(0).setCellRenderer(c);
             }
         } catch (Exception ex) {
             Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
@@ -552,6 +560,7 @@ public class Pedidos extends javax.swing.JFrame {
 
     private void btnActualizarPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarPedidosActionPerformed
         setTable();
+        JOptionPane.showMessageDialog(dialogEtiqueta, "Pedidos Actualizados", "Succes", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnActualizarPedidosActionPerformed
     
     
@@ -616,37 +625,38 @@ public class Pedidos extends javax.swing.JFrame {
                 ((JButton)value).doClick();	
                 JButton boton = (JButton) value;	
                 if("surtir_pedido".equals(boton.getName())){
-//                    if(validarCambio(row)){
-                        this.cantidad_surtida = 0;
-                        this.positionText.setText("");
-                        this.skuText.setText("");
-                        this.orderText.setText("");
-                        this.positionText.setEditable(false);
-                        this.skuText.setEditable(false);
-                        this.orderText.setEditable(false);
-                        PlaceHolder holder = new PlaceHolder(positionText, "Codigo Posicion");
-                        new PlaceHolder(skuText, "SKU/EAN");
-                        new PlaceHolder(orderText, "Order MKTF");
-                        this.positionText.setEnabled(false);
-                        this.skuText.setEnabled(false);
-                        this.orderText.setEnabled(false);
-                        String seller_name = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Seller").getModelIndex())).toString();
-                        String num_order = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("# Orden").getModelIndex())).toString();
-                        String order_mktf = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Orden Marketful").getModelIndex())).toString();
-                        String seller_sku = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Seller SKU").getModelIndex())).toString();
-                        String posicion = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Posicion").getModelIndex())).toString();
-                        String cantidad_surtida = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Cantidad Anunciada").getModelIndex())).toString();
-                        this.cantidad_anunciada = Integer.parseInt(cantidad_surtida);
-                        this.numOrden.setText(num_order);
-                        this.sellerName.setText(seller_name);
-                        this.ordenMKTF.setText(order_mktf);
-                        this.sellerSKU.setText(seller_sku);
-                        this.cantidadSurtida.setText("0/"+cantidad_surtida);
-                        this.positionText.setEnabled(true);
-                        this.positionText.setEditable(true);
-                        this.positionText.requestFocus(true);
-                        this.pedido_id = this.lista.get(row);
-//                    }   
+                    this.cantidad_surtida = 0;
+                    this.positionText.setText("");
+                    this.skuText.setText("");
+                    this.orderText.setText("");
+                    this.positionText.setEditable(false);
+                    this.skuText.setEditable(false);
+                    this.orderText.setEditable(false);
+                    PlaceHolder holder = new PlaceHolder(positionText, "Codigo Posicion");
+                    new PlaceHolder(skuText, "SKU/EAN");
+                    new PlaceHolder(orderText, "Order MKTF");
+                    this.positionText.setEnabled(false);
+                    this.skuText.setEnabled(false);
+                    this.orderText.setEnabled(false);
+                    String seller_name = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Seller").getModelIndex())).toString();
+                    String num_order = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("# Orden").getModelIndex())).toString();
+                    String order_mktf = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Orden Marketful").getModelIndex())).toString();
+                    String seller_sku = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Seller SKU").getModelIndex())).toString();
+                    String posicion = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Posicion").getModelIndex())).toString();
+                    String cantidad_surtida = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Cantidad Anunciada").getModelIndex())).toString();
+                    this.cantidad_anunciada = Integer.parseInt(cantidad_surtida);
+                    this.numOrden.setText(num_order);
+                    this.sellerName.setText(seller_name);
+                    this.ordenMKTF.setText(order_mktf);
+                    this.sellerSKU.setText(seller_sku);
+                    this.cantidadSurtida.setText("0/"+cantidad_surtida);
+                    this.positionText.setEnabled(true);
+                    this.positionText.setEditable(true);
+                    this.positionText.requestFocus(true);
+                    this.pedido_id = this.lista.get(row);  
+                }else if("calcular".equals(boton.getName())){
+                    this.pedido_id = this.lista.get(row);
+                    calcularNuevaPosicion(row);
                 }	
             }
             
@@ -675,27 +685,44 @@ public class Pedidos extends javax.swing.JFrame {
         this.generarPedidos.setEnabled(false);
         if(this.session_activa){
             String response;
-        try {
-            response = request.generarPedidos(this.sesion.getSessionToken());
-            if("200".equals(response)){
-                JOptionPane.showMessageDialog(dialogEtiqueta, "Pedidos Generados", "", JOptionPane.INFORMATION_MESSAGE);
-                setTable();
-                this.generarPedidos.setEnabled(true);
-            }else{
-                JOptionPane.showMessageDialog(dialogEtiqueta, response, "Alerta", JOptionPane.ERROR_MESSAGE);
+            try {
+                response = request.generarPedidos(this.sesion.getSessionToken());
+                if("200".equals(response)){
+                    JOptionPane.showMessageDialog(dialogEtiqueta, "Pedidos Generados", "", JOptionPane.INFORMATION_MESSAGE);
+                    setTable();
+                    this.generarPedidos.setEnabled(true);
+                }else{
+                    JOptionPane.showMessageDialog(dialogEtiqueta, response, "Alerta", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error interno al generar los pedidos.", "Error", JOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error interno al generar los pedidos.", "Error", JOptionPane.ERROR_MESSAGE);
-            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
-        }
         }else{
-            JOptionPane.showMessageDialog(dialogEtiqueta, "Debes iniciar Sesion para surtir pedidos", "Alerta", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Debes iniciar Sesion para generar pedidos", "Alerta", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_generarPedidosActionPerformed
     
     Thread newThread = new Thread(() -> {
         consultarStatusEtiquetas();
     });
+    public void calcularNuevaPosicion(Integer row){
+        tableData.setValueAt("Calculando...", this.row_active, tableData.convertColumnIndexToView(tableData.getColumn("Calcular").getModelIndex()) );
+        String response;
+        try {
+            response = request.cambiarPosicion(this.pedido_id);
+            if("200".equals(response)){
+               JOptionPane.showMessageDialog(dialogEtiqueta, "Posicion Actualizada", "Succes", JOptionPane.INFORMATION_MESSAGE);
+               setTable();
+            }else{
+                JOptionPane.showMessageDialog(dialogEtiqueta, "Error al intentar actualizar la posicion", "Alerta", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error interno al actualizar la posicion del pedido.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     
     public Boolean validarCambio(Integer row){
         System.out.println(this.pedido_iniciado);
@@ -785,8 +812,15 @@ public class Pedidos extends javax.swing.JFrame {
     public void finalizarPedido(){
         tableData.setValueAt(this.cantidad_surtida.toString(), this.row_active, tableData.convertColumnIndexToView(tableData.getColumn("Cantidad Surtida").getModelIndex()) );
         tableData.setValueAt("Pedido Completado", this.row_active, tableData.convertColumnIndexToView(tableData.getColumn("Surtir").getModelIndex()) );
-        tableData.setValueAt("", this.row_active, tableData.convertColumnIndexToView(tableData.getColumn("Calcular").getModelIndex()) );
-//        tableData.setb
+        tableData.setValueAt("✔", this.row_active, tableData.convertColumnIndexToView(tableData.getColumn("Calcular").getModelIndex()) );
+//        int la_columna2 = tableData.convertColumnIndexToView(tableData.getColumn("Calcular").getModelIndex());
+//        tableData.getColumnModel().getColumn(la_columna2).setCellRenderer(c);
+//        int la_column1 = tableData.convertColumnIndexToView(tableData.getColumn("Surtir").getModelIndex());
+//        tableData.getColumnModel().getColumn(la_column1).setCellRenderer(c);
+        for (int i = 0; i <= 12; i++) {
+//            int la_column1 = tableData.convertColumnIndexToView(tableData.getColumn("Surtir").getModelIndex());
+            tableData.getColumnModel().getColumn(i).setCellRenderer(c);
+        }
     }
     
     public void registrarConsolidado(String consolidado_id){
