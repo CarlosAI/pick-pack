@@ -334,4 +334,164 @@ public class HttpRequest {
         }
         return resultado;
     }
+    
+     public String[] verificarPedioRuta(String order_id, String pedido_id) throws Exception {
+
+        String url_final = url_base + "pedidos/verificar_pedido_ruta_pedido_api?order_id="+order_id+"&pedido_id="+pedido_id;
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        String resultado = "error";
+         String res2[] = new String[5];
+        if(responseCode == 200){
+            System.out.println("\nSending 'GET' request to URL : " + url_final);
+            BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            JSONObject res = new JSONObject(response.toString());
+            System.out.println(res);
+            res2[0] = res.getString("result");
+            res2[1] = res.getString("message");
+        }else{
+            res2[0] ="404";
+            res2[1] = "Error interno Marketful";
+        }
+//        System.out.println(Arrays.toString(res2));
+        return res2;
+    }
+     
+     public String verificarConsolidado(String consolidado_id, String pedido_id) throws Exception {
+
+        String url_final = url_base + "pedidos/verificar_consolidado_api?consolidado_id="+consolidado_id+"&pedido_id="+pedido_id;
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        String resultado = "400";
+        if(responseCode == 200){
+            System.out.println("\nSending 'GET' request to URL : " + url_final);
+            BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            JSONObject res = new JSONObject(response.toString());
+            System.out.println(res);
+            resultado = res.getString("result");
+        }
+        return resultado;
+    }
+     
+    public String registrarConsolidadoApi(String consolidado_id, String pedido_id, String token) throws Exception {
+        System.out.println("Vamos a surtir pedido");
+        String url_final = url_base + "pedidos/sacar_de_posicion_api?consolidado_id="+consolidado_id+"&pedido_id="+pedido_id;
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setRequestProperty("Authorization", "Bearer "+token);
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        String resultado = "400";
+        if(responseCode == 200){
+            System.out.println("\nSending 'GET' request to URL : " + url_final);
+            BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            JSONObject res = new JSONObject(response.toString());
+            System.out.println("here");
+            System.out.println(res);
+            if(res.has("status")){
+                System.out.println("Si tiene");
+                resultado = res.getString("errors");
+            }else{
+                System.out.println("no tiene");
+                resultado = res.getString("result");
+            }
+            System.out.println(resultado);
+        }else if(responseCode == 403){
+            resultado = "Sesion Expirada";
+        }
+        return resultado;
+    }
+    
+    public String generarPedidos(String token) throws Exception {
+        System.out.println("Vamos a surtir pedido");
+        String url_final = url_base + "pedidos/generar_pedidos_api";
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setRequestProperty("Authorization", "Bearer "+token);
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        String resultado = "400";
+        if(responseCode == 200){
+            System.out.println("\nSending 'GET' request to URL : " + url_final);
+            BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            JSONObject res = new JSONObject(response.toString());
+            System.out.println("here");
+            System.out.println(res);
+            if(res.has("status")){
+                System.out.println("Si tiene");
+                resultado = res.getString("errors");
+            }else{
+                System.out.println("no tiene");
+                resultado = res.getString("result");
+            }
+            System.out.println(resultado);
+        }else if(responseCode == 403){
+            resultado = "Sesion Expirada";
+        }
+        return resultado;
+    }
 }
