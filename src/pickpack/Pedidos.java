@@ -26,7 +26,9 @@ import org.json.JSONObject;
 public class Pedidos extends javax.swing.JFrame {
     
     String titles[] = {"#","Seller", "Tipo Envio", "Canal", "# Orden", "Orden Marketful", "Descripcion", "Seller SKU", "Cantidad Anunciada", "Cantidad Surtida", "Posicion", "Surtir", "Calcular"};
+    String titlesEnvios[] = {"Seller", "Canal", "Orden Marketful", "No. Orden", "Cliente", "Paqueteria", "No. Guia", "Fecha Surtido", "Status", "Cancelar", "Ver"};
     DefaultTableModel model = new DefaultTableModel();
+    DefaultTableModel modelEnvios = new DefaultTableModel();
     File out = new File("prueba_etiquetas.pdf");
     HttpRequest request = new HttpRequest();
     public String url_etiquetas = null;
@@ -44,6 +46,7 @@ public class Pedidos extends javax.swing.JFrame {
     ColorCelda c = new ColorCelda();
     
     ArrayList<String> lista = new ArrayList<>();
+    ArrayList<String> listaEnvios = new ArrayList<>();
     
 
     public Pedidos(Sesion session) {
@@ -84,7 +87,8 @@ public class Pedidos extends javax.swing.JFrame {
         this.orderText.setEnabled(false);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setTable();
-        this.jTabbedPane1.setEnabledAt(1, false);
+        setTableEnvios();
+//        this.jTabbedPane1.setEnabledAt(1, false);
         this.jTabbedPane1.setEnabledAt(2, false);
         tableData.setSelectionBackground(java.awt.Color.BLUE);
         tableData.setSelectionForeground(java.awt.Color.white);
@@ -96,9 +100,9 @@ public class Pedidos extends javax.swing.JFrame {
 //        tableData.getColumnModel().getColumn(la_columna2).setCellRenderer(c);
 //        int la_column1 = tableData.convertColumnIndexToView(tableData.getColumn("Surtir").getModelIndex());
 //        tableData.getColumnModel().getColumn(0).setCellRenderer(c);
-        for (int i = 0; i <= 12; i++) {
-            tableData.getColumnModel().getColumn(i).setCellRenderer(c);
-        }
+//        for (int i = 0; i <= 12; i++) {
+//            tableData.getColumnModel().getColumn(i).setCellRenderer(c);
+//        }
     }
     
     public final void setTable(){
@@ -157,7 +161,7 @@ public class Pedidos extends javax.swing.JFrame {
                 model.addRow(row);
             }
             for (int i = 0; i <= 12; i++) {
-                tableData.getColumnModel().getColumn(0).setCellRenderer(c);
+                tableData.getColumnModel().getColumn(i).setCellRenderer(c);
             }
         } catch (Exception ex) {
             Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
@@ -185,6 +189,88 @@ public class Pedidos extends javax.swing.JFrame {
 //        });
     }
     
+        public final void setTableEnvios(){
+        listaEnvios.clear();
+        modelEnvios = new DefaultTableModel(null,titlesEnvios){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                if(column == 10){
+                   return true;
+                }else{
+                   return false;
+                }
+//                return false;
+            }
+        };
+        
+        envioTabla.setModel(modelEnvios);
+        envioTabla.setDefaultRenderer(Object.class, new Render());
+        envioTabla.setRowHeight(30);
+        JButton btn1 = new JButton("Cancelar Guia");
+        btn1.setName("cancelar_guia");
+        JButton btn2 = new JButton("Ver");
+        btn2.setName("ver_envio");
+        JButton btn3 = new JButton("Cancelar Guia");
+        btn3.setName("cancelar_guia_disabled");
+        btn3.setEnabled(false);
+        try {
+            StringBuilder response = request.getEnvios(this.sellerFiltro.getText(), this.ordenFiltro.getText(), this.numordenFiltro.getText(), this.paqueteriaFiltro.getText(), this.canalFiltro.getText());
+            JSONObject res = new JSONObject(response.toString());
+            JSONArray los_envios = res.getJSONArray("envios");
+            System.out.println(los_envios.length());
+            System.out.println(los_envios);
+            
+            for (int i = 0; i < los_envios.length(); i++) {
+                
+                JSONObject elemento = los_envios.getJSONObject(i);
+                
+                listaEnvios.add(elemento.getString("id"));
+                Object row[] = new Object[11];
+                row[0] = elemento.getString("nombre_seller");
+                row[1] = elemento.getString("site");
+                row[2] = elemento.getString("shopi_order_id");
+                row[3] = elemento.getString("shopi_order_name");
+                
+                row[4] = elemento.getString("nombre_cliente");
+                if("null".equals(elemento.getString("numero_de_guia"))){
+                    row[5] = "";
+                }else{
+                     row[5] = elemento.getString("carrier_name");
+                }
+                if( !"ajuste_cancelada".equals(elemento.getString("status")) && !"null".equals(elemento.getString("status")) ){    
+                    if("null".equals(elemento.getString("numero_de_guia"))){
+                        row[6] = "";
+                    }else{
+                        row[6] = elemento.getString("numero_de_guia");
+                    }
+                }else{
+                    row[6] = "";
+                }
+                
+                if("null".equals(elemento.getString("numero_de_guia"))){
+                    row[7] = "";
+                }else{
+                    row[7] = elemento.getString("fecha_generada");
+                }
+                
+                row[8] = elemento.getString("status");
+                if("guia_generada".equals(elemento.getString("status"))){
+                    row[9] = btn1;
+                }else{
+                    row[9] = btn3;
+                }
+                
+                row[10] = btn2;           
+                modelEnvios.addRow(row);
+            }
+            for (int i = 0; i <= 10; i++) {
+                envioTabla.getColumnModel().getColumn(i).setCellRenderer(c);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 102 - Error al consultar los Envios.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 //    public void() funcion actualizar posicion de pedido
 
     @SuppressWarnings("unchecked")
@@ -223,6 +309,22 @@ public class Pedidos extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableData = new javax.swing.JTable();
         jTabbedPane4 = new javax.swing.JTabbedPane();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        sellerFiltro = new javax.swing.JTextField();
+        ordenFiltro = new javax.swing.JTextField();
+        numordenFiltro = new javax.swing.JTextField();
+        paqueteriaFiltro = new javax.swing.JTextField();
+        canalFiltro = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        envioTabla = new javax.swing.JTable();
         jTabbedPane3 = new javax.swing.JTabbedPane();
         userWelcome = new javax.swing.JLabel();
         btnActualizarPedidos = new javax.swing.JButton();
@@ -445,7 +547,7 @@ public class Pedidos extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 109, Short.MAX_VALUE))
+                        .addGap(0, 185, Short.MAX_VALUE))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
         );
@@ -461,7 +563,123 @@ public class Pedidos extends javax.swing.JFrame {
         jTabbedPane2.addTab("", jPanel1);
 
         jTabbedPane1.addTab("Surtir Pedidos", jTabbedPane2);
-        jTabbedPane1.addTab("Ver pedidos", jTabbedPane4);
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Pendientes" }));
+
+        paqueteriaFiltro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                paqueteriaFiltroActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Buscar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setText("Seller");
+
+        jLabel11.setText("Orden MKTF");
+
+        jLabel13.setText("No. Orden");
+
+        jLabel14.setText("Paqueteria");
+
+        jLabel15.setText("Canal");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(sellerFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ordenFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(numordenFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(paqueteriaFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(canalFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton2))
+                    .addComponent(jLabel15))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel11)
+                    .addComponent(jLabel13)
+                    .addComponent(jLabel14)
+                    .addComponent(jLabel15))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sellerFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ordenFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(numordenFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(paqueteriaFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(canalFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2))
+                .addContainerGap())
+        );
+
+        envioTabla.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane4.setViewportView(envioTabla);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 864, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE))
+        );
+
+        jTabbedPane4.addTab("", jPanel3);
+
+        jTabbedPane1.addTab("Envios", jTabbedPane4);
         jTabbedPane1.addTab("Otro", jTabbedPane3);
 
         userWelcome.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
@@ -702,6 +920,14 @@ public class Pedidos extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(dialogEtiqueta, "Debes iniciar Sesion para generar pedidos", "Alerta", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_generarPedidosActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        setTableEnvios();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void paqueteriaFiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paqueteriaFiltroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_paqueteriaFiltroActionPerformed
     
     Thread newThread = new Thread(() -> {
         consultarStatusEtiquetas();
@@ -1015,16 +1241,24 @@ public class Pedidos extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizarPedidos;
     private javax.swing.JButton btnGenerarPdf;
+    private javax.swing.JTextField canalFiltro;
     private javax.swing.JButton cancelarSurtido;
     private javax.swing.JLabel cantidadSurtida;
     private javax.swing.JDialog dialogEtiqueta;
     private javax.swing.JMenuItem donwloadPdf;
+    private javax.swing.JTable envioTabla;
     private javax.swing.JButton generarPedidos;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1032,26 +1266,34 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JTabbedPane jTabbedPane4;
     private javax.swing.JLabel numOrden;
+    private javax.swing.JTextField numordenFiltro;
+    private javax.swing.JTextField ordenFiltro;
     private javax.swing.JLabel ordenMKTF;
     private javax.swing.JTextField orderText;
+    private javax.swing.JTextField paqueteriaFiltro;
     private javax.swing.JTextPane positionName;
     private javax.swing.JTextField positionText;
     private javax.swing.JProgressBar progressBar;
+    private javax.swing.JTextField sellerFiltro;
     private javax.swing.JLabel sellerName;
     private javax.swing.JTextPane sellerSKU;
     private javax.swing.JMenuItem serrarSesion;

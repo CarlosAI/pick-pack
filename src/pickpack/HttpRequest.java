@@ -527,4 +527,42 @@ public class HttpRequest {
         }
         return resultado;
     }
+    
+    public StringBuilder getEnvios(String seller, String orden_mktf, String num_orden, String paqueteria, String canal) throws Exception {
+        System.out.println("params son");
+        System.out.println(seller);
+        System.out.println(orden_mktf);
+        System.out.println(num_orden);
+        System.out.println(paqueteria);
+        System.out.println(canal);
+        String url_final = url_base + "shipments/envios?seller_name="+seller+"&orden_mktf="+orden_mktf+"&numero_orden="+num_orden+"&carrier_name="+paqueteria+"&canal="+canal;
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'GET' request to URL : " + url_final);
+
+        BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        JSONObject res = new JSONObject(response.toString());
+        String resultado = res.getString("envios");
+        String res2[] = new String[1];
+        res2[0] = resultado;
+       
+        return response;
+    }
 }
