@@ -4,6 +4,7 @@ package pickpack;
 
 import com.placeholder.PlaceHolder;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.List;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -45,8 +46,19 @@ public class Pedidos extends javax.swing.JFrame {
     Integer row_active = null;
     ColorCelda c = new ColorCelda();
     
+    String filtroSeller = "";
+    String filtroOrden = "";
+    String filtroNumOrden = "";
+    String filtroCarrier = "";
+    String filtroCanal = "";
+    String filtroStatus = "";
+    
     ArrayList<String> lista = new ArrayList<>();
     ArrayList<String> listaEnvios = new ArrayList<>();
+    Integer totalPagesEnvios = 0;
+    Integer currentPage = 1;
+    Boolean se_puede_next = false;
+    Boolean se_puede_prev = false;
     
 
     public Pedidos(Sesion session) {
@@ -90,8 +102,8 @@ public class Pedidos extends javax.swing.JFrame {
         setTableEnvios();
 //        this.jTabbedPane1.setEnabledAt(1, false);
         this.jTabbedPane1.setEnabledAt(2, false);
-        tableData.setSelectionBackground(java.awt.Color.BLUE);
-        tableData.setSelectionForeground(java.awt.Color.white);
+//        tableData.setSelectionBackground(java.awt.Color.BLUE);
+//        tableData.setSelectionForeground(java.awt.Color.white);
 //        int la_columna = tableData.convertColumnIndexToView(tableData.getColumn("Seller").getModelIndex());
 //        System.out.println("la columna es" +la_columna);
 //        tableData.getColumnModel().getColumn(la_columna).setCellRenderer(c);
@@ -214,11 +226,32 @@ public class Pedidos extends javax.swing.JFrame {
         btn3.setName("cancelar_guia_disabled");
         btn3.setEnabled(false);
         try {
-            StringBuilder response = request.getEnvios(this.sellerFiltro.getText(), this.ordenFiltro.getText(), this.numordenFiltro.getText(), this.paqueteriaFiltro.getText(), this.canalFiltro.getText());
+            StringBuilder response = request.getEnvios(this.filtroSeller, this.filtroOrden, this.filtroNumOrden, this.filtroCarrier, this.filtroCanal, this.currentPage, this.filtroStatus);
             JSONObject res = new JSONObject(response.toString());
             JSONArray los_envios = res.getJSONArray("envios");
             System.out.println(los_envios.length());
             System.out.println(los_envios);
+            System.out.println("total paginas es "+res.getString("pages"));
+            this.totalPagesEnvios = Integer.parseInt(res.getString("pages"));
+            if(this.totalPagesEnvios == 0){
+                this.currentPage = 0;
+            }
+            this.totalPages.setText("Pag. "+this.currentPage+"/"+this.totalPagesEnvios);
+            if(this.currentPage > 1){
+                pagAnterior.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                se_puede_prev = true;
+            }else{
+                se_puede_prev = false;
+                pagAnterior.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            }
+            
+            if(this.currentPage != this.totalPagesEnvios){
+                nextPage.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                se_puede_next = true;
+            }else{
+                se_puede_next = false;
+                nextPage.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            }
             
             for (int i = 0; i < los_envios.length(); i++) {
                 
@@ -311,7 +344,7 @@ public class Pedidos extends javax.swing.JFrame {
         jTabbedPane4 = new javax.swing.JTabbedPane();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        statusFiltro = new javax.swing.JComboBox<>();
         sellerFiltro = new javax.swing.JTextField();
         ordenFiltro = new javax.swing.JTextField();
         numordenFiltro = new javax.swing.JTextField();
@@ -325,7 +358,17 @@ public class Pedidos extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         envioTabla = new javax.swing.JTable();
+        pagAnterior = new javax.swing.JLabel();
+        totalPages = new javax.swing.JLabel();
+        nextPage = new javax.swing.JLabel();
         jTabbedPane3 = new javax.swing.JTabbedPane();
+        jPanel7 = new javax.swing.JPanel();
+        jPanel9 = new javax.swing.JPanel();
+        jPanel10 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
+        jPanel12 = new javax.swing.JPanel();
         userWelcome = new javax.swing.JLabel();
         btnActualizarPedidos = new javax.swing.JButton();
         btnGenerarPdf = new javax.swing.JButton();
@@ -547,7 +590,7 @@ public class Pedidos extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 185, Short.MAX_VALUE))
+                        .addGap(0, 289, Short.MAX_VALUE))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
         );
@@ -557,7 +600,7 @@ public class Pedidos extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("", jPanel1);
@@ -566,7 +609,7 @@ public class Pedidos extends javax.swing.JFrame {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Pendientes" }));
+        statusFiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Pendientes" }));
 
         paqueteriaFiltro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -597,7 +640,7 @@ public class Pedidos extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(statusFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(sellerFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -635,7 +678,7 @@ public class Pedidos extends javax.swing.JFrame {
                     .addComponent(jLabel15))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(statusFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(sellerFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ordenFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(numordenFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -658,6 +701,27 @@ public class Pedidos extends javax.swing.JFrame {
         ));
         jScrollPane4.setViewportView(envioTabla);
 
+        pagAnterior.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        pagAnterior.setForeground(new java.awt.Color(51, 51, 255));
+        pagAnterior.setText("Anterior");
+        pagAnterior.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        pagAnterior.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pagAnteriorMouseClicked(evt);
+            }
+        });
+
+        totalPages.setText("Pag. 1/50");
+
+        nextPage.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        nextPage.setForeground(new java.awt.Color(0, 51, 255));
+        nextPage.setText("Siguiente");
+        nextPage.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                nextPageMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -665,22 +729,140 @@ public class Pedidos extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 864, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 968, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(pagAnterior)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(totalPages)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(nextPage)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(pagAnterior)
+                    .addComponent(totalPages)
+                    .addComponent(nextPage))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE))
         );
 
         jTabbedPane4.addTab("", jPanel3);
 
         jTabbedPane1.addTab("Envios", jTabbedPane4);
-        jTabbedPane1.addTab("Otro", jTabbedPane3);
+
+        jTabbedPane3.setToolTipText("Generar una guia de Envio para una orden");
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addContainerGap(651, Short.MAX_VALUE)
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(227, 227, 227))
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(189, 189, 189)
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(413, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        jTabbedPane3.addTab("Consolidados", jPanel7);
+
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), "Selecciona una Opcion", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14))); // NOI18N
+        jPanel8.setPreferredSize(new java.awt.Dimension(12, 191));
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 174, Short.MAX_VALUE)
+        );
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), "Escanea la Orden", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.ABOVE_TOP, new java.awt.Font("Tahoma", 0, 14))); // NOI18N
+        jPanel6.setPreferredSize(new java.awt.Dimension(12, 191));
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 966, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 199, Short.MAX_VALUE)
+        );
+
+        jPanel12.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), "Selecciona una Paqueteria", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14))); // NOI18N
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 209, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 978, Short.MAX_VALUE)
+            .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 978, Short.MAX_VALUE)
+            .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
+                .addGap(26, 26, 26)
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane3.addTab("Ordenes", jPanel5);
+
+        jTabbedPane1.addTab("Hacer Envios", null, jTabbedPane3, "Generar Guias de Envio.");
 
         userWelcome.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
         userWelcome.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -922,12 +1104,48 @@ public class Pedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_generarPedidosActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        this.currentPage = 1;
+        filtroStatus = this.statusFiltro.getSelectedItem().toString();
+        if("Pendientes".equals(filtroStatus)){
+            filtroStatus = "sin_guia";
+        }else{
+            filtroStatus = "";
+        }
+        filtroSeller = this.sellerFiltro.getText();
+        filtroOrden = this.ordenFiltro.getText();
+        filtroNumOrden = this.numordenFiltro.getText();
+        filtroCarrier = this.paqueteriaFiltro.getText();
+        filtroCanal = this.canalFiltro.getText();
+        
+        this.sellerFiltro.setText("");
+        this.ordenFiltro.setText("");
+        this.numordenFiltro.setText("");
+        this.paqueteriaFiltro.setText("");
+        this.canalFiltro.setText("");
+        
         setTableEnvios();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void paqueteriaFiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paqueteriaFiltroActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_paqueteriaFiltroActionPerformed
+
+    private void nextPageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nextPageMouseClicked
+        if(se_puede_next){
+            nextPage.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            this.currentPage = this.currentPage + 1;
+            setTableEnvios();
+        }
+    }//GEN-LAST:event_nextPageMouseClicked
+
+    private void pagAnteriorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pagAnteriorMouseClicked
+        if(se_puede_prev){
+            pagAnterior.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            this.currentPage = this.currentPage - 1;
+            setTableEnvios();
+        }
+        
+    }//GEN-LAST:event_pagAnteriorMouseClicked
     
     Thread newThread = new Thread(() -> {
         consultarStatusEtiquetas();
@@ -1250,7 +1468,6 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JButton generarPedidos;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1272,9 +1489,16 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -1284,11 +1508,13 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JTabbedPane jTabbedPane4;
+    private javax.swing.JLabel nextPage;
     private javax.swing.JLabel numOrden;
     private javax.swing.JTextField numordenFiltro;
     private javax.swing.JTextField ordenFiltro;
     private javax.swing.JLabel ordenMKTF;
     private javax.swing.JTextField orderText;
+    private javax.swing.JLabel pagAnterior;
     private javax.swing.JTextField paqueteriaFiltro;
     private javax.swing.JTextPane positionName;
     private javax.swing.JTextField positionText;
@@ -1298,7 +1524,9 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JTextPane sellerSKU;
     private javax.swing.JMenuItem serrarSesion;
     private javax.swing.JTextField skuText;
+    private javax.swing.JComboBox<String> statusFiltro;
     private javax.swing.JTable tableData;
+    private javax.swing.JLabel totalPages;
     private javax.swing.JLabel userWelcome;
     // End of variables declaration//GEN-END:variables
 }

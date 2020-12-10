@@ -24,7 +24,7 @@ public class ColorCelda extends DefaultTableCellRenderer{
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 //        System.out.println("Value es "+value);
-            System.out.println("row es "+row);
+//            System.out.println("row es "+row);
         if(value.equals("Pedido Completado") || value.equals("✔")){
 //            System.out.println("Lo vamos a pintar");
             this.setBackground(Color.green);

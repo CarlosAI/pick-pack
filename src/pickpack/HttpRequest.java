@@ -528,14 +528,14 @@ public class HttpRequest {
         return resultado;
     }
     
-    public StringBuilder getEnvios(String seller, String orden_mktf, String num_orden, String paqueteria, String canal) throws Exception {
+    public StringBuilder getEnvios(String seller, String orden_mktf, String num_orden, String paqueteria, String canal, Integer page, String status) throws Exception {
         System.out.println("params son");
         System.out.println(seller);
         System.out.println(orden_mktf);
         System.out.println(num_orden);
         System.out.println(paqueteria);
         System.out.println(canal);
-        String url_final = url_base + "shipments/envios?seller_name="+seller+"&orden_mktf="+orden_mktf+"&numero_orden="+num_orden+"&carrier_name="+paqueteria+"&canal="+canal;
+        String url_final = url_base + "shipments/envios?seller_name="+seller+"&orden_mktf="+orden_mktf+"&numero_orden="+num_orden+"&carrier_name="+paqueteria+"&canal="+canal+"&page="+page+"&status_envio="+status;
 
         URL obj = new URL(url_final);
         
