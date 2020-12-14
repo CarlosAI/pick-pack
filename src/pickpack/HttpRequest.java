@@ -6,11 +6,13 @@
 package pickpack;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import org.json.JSONObject;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -637,6 +639,126 @@ public class HttpRequest {
 
         int responseCode = con.getResponseCode();
         System.out.println("\nSending 'GET' request to URL : " + url_final);
+
+        BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+       
+        return response;
+    }
+    
+    public StringBuilder consultarBoxes() throws Exception {
+
+        String url_final = url_base + "pedidos/consultar_boxes";
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'GET' request to URL : " + url_final);
+
+        BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+       
+        return response;
+    }
+    
+    public StringBuilder consultarBox(String box_name) throws Exception {
+
+        String url_final = url_base + "pedidos/consultar_box_api?box_name="+ URLEncoder.encode(box_name, "utf-8");
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'GET' request to URL : " + url_final);
+
+        BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+       
+        return response;
+    }
+    
+    public StringBuilder consultarRates(String no_paquete, String carrier) throws Exception {
+
+        String url_final = url_base + "pedidos/consultar_rates_api?no_paquete="+ URLEncoder.encode(no_paquete, "utf-8") + "&paqueteria="+URLEncoder.encode(carrier, "utf-8");
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'GET' request to URL : " + url_final);
+
+        BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+       
+        return response;
+    }
+    
+    public StringBuilder cotizarPaqex(String largo, String ancho, String alto, String tipo_paquete, String peso, String estado, String colonia, String calle, String no_ext, String no_int, String telefono, String codigo_postal, String destinatario, String email, String municipio, String asegurado) throws Exception {
+
+        String url_final = url_base + "labels/cotizar_guia_paquex_api";
+        
+        String urlParameters = "?largo="+URLEncoder.encode(largo, "utf-8")+"&ancho="+URLEncoder.encode(ancho, "utf-8")+"&alto="+URLEncoder.encode(alto, "utf-8")+"&tipo_paquete="+URLEncoder.encode(tipo_paquete, "utf-8")+"&peso="+URLEncoder.encode(peso, "utf-8")+"&estado="+URLEncoder.encode(estado, "utf-8")+"&colonia="+URLEncoder.encode(colonia, "utf-8")+"&calle="+URLEncoder.encode(calle, "utf-8")+"&no_ext="+URLEncoder.encode(no_ext, "utf-8")+"&no_int="+URLEncoder.encode(no_int, "utf-8")+"&telefono="+URLEncoder.encode(telefono, "utf-8")+"&codigo_postal="+URLEncoder.encode(codigo_postal, "utf-8")+"&destinatario="+URLEncoder.encode(destinatario, "utf-8")+"&email="+URLEncoder.encode(email, "utf-8")+"&municipio="+URLEncoder.encode(municipio, "utf-8")+"&asegurado="+URLEncoder.encode(asegurado, "utf-8");
+        
+        url_final = url_final + urlParameters;
+        
+        byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
+        int postDataLength = postData.length;
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setRequestProperty("Content-Length", Integer.toString( postDataLength ));
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url_final);
 
         BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
         String inputLine;

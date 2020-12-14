@@ -73,7 +73,7 @@ public class Pedidos extends javax.swing.JFrame {
     String el_pais = "sin_pais";
     String order_actual_id = null;
     String listaEstados[] = {"AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHEM", "CHIAPA", "CHIHUAHUA", "CIUDAD DE MEXICO", "COHAUILA", "COLIMA", "DURANGO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MEXICO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS"};
-
+    String tipo_de_paquete = "";
     
 
     public Pedidos(Sesion session) {
@@ -408,6 +408,7 @@ public class Pedidos extends javax.swing.JFrame {
         jSeparator8 = new javax.swing.JSeparator();
         jPanel15 = new javax.swing.JPanel();
         jLabel121 = new javax.swing.JLabel();
+        jCheckBox1 = new javax.swing.JCheckBox();
         formCrearGuiaFedex = new javax.swing.JDialog();
         jLabel56 = new javax.swing.JLabel();
         jTextField21 = new javax.swing.JTextField();
@@ -467,6 +468,8 @@ public class Pedidos extends javax.swing.JFrame {
         jTextField77 = new javax.swing.JTextField();
         jTextField78 = new javax.swing.JTextField();
         jLabel128 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
         menuSec = new javax.swing.JTabbedPane();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
@@ -572,6 +575,30 @@ public class Pedidos extends javax.swing.JFrame {
 
         jLabel41.setText("Posicion Alm Salida.");
 
+        jTextField24.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField24KeyTyped(evt);
+            }
+        });
+
+        jTextField49.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField49KeyTyped(evt);
+            }
+        });
+
+        jTextField50.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField50KeyTyped(evt);
+            }
+        });
+
+        jTextField51.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField51KeyTyped(evt);
+            }
+        });
+
         jLabel42.setText("No. Paquete");
 
         jLabel87.setText("Peso");
@@ -662,12 +689,32 @@ public class Pedidos extends javax.swing.JFrame {
         jTextField53.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jTextField54.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField54.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField54KeyTyped(evt);
+            }
+        });
 
         jTextField55.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField55.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField55KeyTyped(evt);
+            }
+        });
 
         jTextField56.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField56.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField56KeyTyped(evt);
+            }
+        });
 
         jTextField57.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField57.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField57KeyTyped(evt);
+            }
+        });
 
         jLabel93.setText("No. Guia");
 
@@ -680,8 +727,6 @@ public class Pedidos extends javax.swing.JFrame {
         jLabel97.setText("Largo");
 
         jButton9.setText("Confirmar");
-
-        tiposEnvio1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout formGuiaExistenteLayout = new javax.swing.GroupLayout(formGuiaExistente.getContentPane());
         formGuiaExistente.getContentPane().setLayout(formGuiaExistenteLayout);
@@ -777,6 +822,11 @@ public class Pedidos extends javax.swing.JFrame {
         jLabel104.setText("Numero Interior");
 
         cotizarGuia2.setText("Cotizar Guia");
+        cotizarGuia2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cotizarGuia2ActionPerformed(evt);
+            }
+        });
 
         jTextField64.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -797,18 +847,43 @@ public class Pedidos extends javax.swing.JFrame {
         jLabel109.setText("Email");
 
         jTextField68.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField68.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField68KeyTyped(evt);
+            }
+        });
 
         jLabel110.setText("Peso (KG)");
 
-        jComboBox6.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox6.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Otro" }));
+        jComboBox6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox6ActionPerformed(evt);
+            }
+        });
 
         jLabel111.setText("Tipo de Paquete");
 
         jTextField69.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField69.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField69KeyTyped(evt);
+            }
+        });
 
         jTextField70.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField70.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField70KeyTyped(evt);
+            }
+        });
 
         jTextField71.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField71.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField71KeyTyped(evt);
+            }
+        });
 
         jLabel112.setText("Largo");
 
@@ -905,74 +980,83 @@ public class Pedidos extends javax.swing.JFrame {
                 .addGap(24, 24, 24))
         );
 
+        jCheckBox1.setText("Asegurar");
+
         javax.swing.GroupLayout formCrearGuiaLayout = new javax.swing.GroupLayout(formCrearGuia.getContentPane());
         formCrearGuia.getContentPane().setLayout(formCrearGuiaLayout);
         formCrearGuiaLayout.setHorizontalGroup(
             formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel98, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(formCrearGuiaLayout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cotizarGuia2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(formCrearGuiaLayout.createSequentialGroup()
-                        .addGap(9, 9, 9)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGap(30, 30, 30)
+                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(formCrearGuiaLayout.createSequentialGroup()
+                                .addGap(9, 9, 9)
                                 .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel99)
-                                    .addComponent(jLabel100)
-                                    .addComponent(jLabel101)
-                                    .addComponent(jLabel102)
-                                    .addComponent(jLabel103)
-                                    .addComponent(jLabel104)
-                                    .addComponent(jLabel105)
-                                    .addComponent(jLabel106)
-                                    .addComponent(jLabel107)
-                                    .addComponent(jLabel108)
-                                    .addComponent(jLabel109))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField58, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField59, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField60, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField61, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField62, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField63, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField64, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField66, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField67, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jComboBox5, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jTextField65, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))))
-                            .addGroup(formCrearGuiaLayout.createSequentialGroup()
-                                .addComponent(jLabel110)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField68, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(formCrearGuiaLayout.createSequentialGroup()
-                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel111)
-                                    .addComponent(jLabel115))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jComboBox6, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formCrearGuiaLayout.createSequentialGroup()
-                                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(formCrearGuiaLayout.createSequentialGroup()
-                                                .addComponent(jTextField69)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                                            .addGroup(formCrearGuiaLayout.createSequentialGroup()
-                                                .addComponent(jLabel112)
-                                                .addGap(50, 50, 50)))
-                                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jTextField70, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel113))
+                                    .addGroup(formCrearGuiaLayout.createSequentialGroup()
+                                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabel99)
+                                            .addComponent(jLabel100)
+                                            .addComponent(jLabel101)
+                                            .addComponent(jLabel102)
+                                            .addComponent(jLabel103)
+                                            .addComponent(jLabel104)
+                                            .addComponent(jLabel105)
+                                            .addComponent(jLabel106)
+                                            .addComponent(jLabel107)
+                                            .addComponent(jLabel108)
+                                            .addComponent(jLabel109))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel114)
-                                            .addComponent(jTextField71, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
-                    .addComponent(jSeparator7)
-                    .addComponent(ConfirmarGuia2, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE))
-                .addGap(7, 7, 7)
+                                            .addComponent(jTextField58, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jTextField59, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jTextField60, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jTextField61, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jTextField62, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jTextField63, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jTextField64, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jTextField66, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jTextField67, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addComponent(jComboBox5, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(jTextField65, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))))
+                                    .addGroup(formCrearGuiaLayout.createSequentialGroup()
+                                        .addComponent(jLabel110)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jTextField68, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(formCrearGuiaLayout.createSequentialGroup()
+                                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabel111)
+                                            .addComponent(jLabel115))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jComboBox6, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formCrearGuiaLayout.createSequentialGroup()
+                                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(formCrearGuiaLayout.createSequentialGroup()
+                                                        .addComponent(jTextField69)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                                                    .addGroup(formCrearGuiaLayout.createSequentialGroup()
+                                                        .addComponent(jLabel112)
+                                                        .addGap(50, 50, 50)))
+                                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(jTextField70, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(jLabel113))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(jLabel114)
+                                                    .addComponent(jTextField71, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(jCheckBox1)))))
+                            .addComponent(jSeparator7, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(7, 7, 7))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formCrearGuiaLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cotizarGuia2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ConfirmarGuia2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addComponent(jSeparator8, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -987,84 +1071,88 @@ public class Pedidos extends javax.swing.JFrame {
                 .addComponent(jLabel98, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(formCrearGuiaLayout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField58, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel99))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField59, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel100))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField60, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel101))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField61, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel102))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField62, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel103))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField63, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel104))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField64, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel105))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel106)
-                            .addComponent(jComboBox5, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField65, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel107))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField66, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel108))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField67, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel109))
-                        .addGap(26, 26, 26)
-                        .addComponent(jSeparator7, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField68, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel110))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jComboBox6, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel111))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel112)
-                            .addComponent(jLabel113)
-                            .addComponent(jLabel114))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField69, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField70, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField71, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel115))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                        .addComponent(cotizarGuia2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(ConfirmarGuia2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(formCrearGuiaLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jSeparator8))
                     .addGroup(formCrearGuiaLayout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(formCrearGuiaLayout.createSequentialGroup()
+                                .addGap(31, 31, 31)
+                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField58, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel99))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField59, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel100))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField60, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel101))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField61, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel102))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField62, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel103))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField63, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel104))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField64, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel105))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel106)
+                                    .addComponent(jComboBox5, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField65, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel107))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField66, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel108))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField67, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel109))
+                                .addGap(26, 26, 26)
+                                .addComponent(jSeparator7, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField68, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel110))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jComboBox6, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel111))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel112)
+                                    .addComponent(jLabel113)
+                                    .addComponent(jLabel114))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(formCrearGuiaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField69, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextField70, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextField71, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel115))
+                                .addGap(18, 18, 18)
+                                .addComponent(jCheckBox1))
+                            .addGroup(formCrearGuiaLayout.createSequentialGroup()
+                                .addGap(11, 11, 11)
+                                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
-                        .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(cotizarGuia2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(7, 7, 7)
+                        .addComponent(ConfirmarGuia2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 9, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -1112,15 +1200,28 @@ public class Pedidos extends javax.swing.JFrame {
 
         jLabel65.setText("Fecha");
 
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel66.setText("Tipo de Servicio");
 
         jTextField36.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField36.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField36KeyTyped(evt);
+            }
+        });
 
         jTextField37.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField37.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField37KeyTyped(evt);
+            }
+        });
 
         jTextField38.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField38.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField38KeyTyped(evt);
+            }
+        });
 
         jLabel67.setText("Largo");
 
@@ -1293,6 +1394,15 @@ public class Pedidos extends javax.swing.JFrame {
 
         jScrollPane9.setViewportView(jPanel16);
 
+        jLabel19.setText("Tipo de Paquete");
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Otro" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout formCrearGuiaFedexLayout = new javax.swing.GroupLayout(formCrearGuiaFedex.getContentPane());
         formCrearGuiaFedex.getContentPane().setLayout(formCrearGuiaFedexLayout);
         formCrearGuiaFedexLayout.setHorizontalGroup(
@@ -1333,28 +1443,29 @@ public class Pedidos extends javax.swing.JFrame {
                                             .addComponent(jLabel66)
                                             .addComponent(jLabel70)
                                             .addComponent(jLabel65)
-                                            .addComponent(jLabel123))
+                                            .addComponent(jLabel123)
+                                            .addComponent(jLabel19))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jTextField35, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formCrearGuiaFedexLayout.createSequentialGroup()
-                                                    .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(formCrearGuiaFedexLayout.createSequentialGroup()
-                                                            .addComponent(jLabel67)
-                                                            .addGap(50, 50, 50))
-                                                        .addGroup(formCrearGuiaFedexLayout.createSequentialGroup()
-                                                            .addComponent(jTextField36)
-                                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
-                                                    .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(jTextField37, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jLabel68))
-                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                    .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(jLabel69)
-                                                        .addComponent(jTextField38, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                            .addComponent(jTextField72, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jTextField35)
+                                            .addComponent(jComboBox4, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formCrearGuiaFedexLayout.createSequentialGroup()
+                                                .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(formCrearGuiaFedexLayout.createSequentialGroup()
+                                                        .addComponent(jLabel67)
+                                                        .addGap(50, 50, 50))
+                                                    .addGroup(formCrearGuiaFedexLayout.createSequentialGroup()
+                                                        .addComponent(jTextField36)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                                                .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(jTextField37, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(jLabel68))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(jLabel69)
+                                                    .addComponent(jTextField38, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(jTextField72)
+                                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                             .addComponent(ConfirmarGuia1, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE))
                         .addGap(7, 7, 7))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formCrearGuiaFedexLayout.createSequentialGroup()
@@ -1429,7 +1540,11 @@ public class Pedidos extends javax.swing.JFrame {
                                 .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jTextField72, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel123))
-                                .addGap(53, 53, 53)
+                                .addGap(18, 18, 18)
+                                .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel19))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel67)
                                     .addComponent(jLabel68)
@@ -1440,7 +1555,7 @@ public class Pedidos extends javax.swing.JFrame {
                                     .addComponent(jTextField37, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jTextField38, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel70))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 108, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
                                 .addComponent(cotizarGuia1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(ConfirmarGuia1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -2428,6 +2543,7 @@ public class Pedidos extends javax.swing.JFrame {
     private void ampmBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ampmBtnActionPerformed
         verificarGuiaPrepagada("AMPM");
         consultarDireccion("AMPM");
+        consultaPaquetes();
         this.formCrearGuia.setTitle("Generar Guia AMPM");
         this.jLabel98.setText("Crear Guia AMPM");
         this.formCrearGuia.setSize(880, 815);
@@ -2459,6 +2575,7 @@ public class Pedidos extends javax.swing.JFrame {
 
     private void upsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upsBtnActionPerformed
         verificarGuiaPrepagada("UPS");
+        consultaRates("UPS");
         this.carrierNameExistente.setText("UPS");
         this.formGuiaExistente.setTitle("Guia Existente UPS");
         this.formGuiaExistente.setSize(560, 412);
@@ -2472,6 +2589,7 @@ public class Pedidos extends javax.swing.JFrame {
 
     private void dhlBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dhlBtnActionPerformed
         verificarGuiaPrepagada("DHL");
+        consultaRates("DHL");
         this.carrierNameExistente.setText("DHL");
         this.formGuiaExistente.setTitle("Guia Existente DHL");
         this.formGuiaExistente.setSize(560, 412);
@@ -2485,6 +2603,7 @@ public class Pedidos extends javax.swing.JFrame {
 
     private void estafetaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_estafetaBtnActionPerformed
         verificarGuiaPrepagada("Estafeta");
+        consultaRates("Estafeta");
         this.carrierNameExistente.setText("Estafeta");
         this.formGuiaExistente.setTitle("Guia Existente Estafeta");
         this.formGuiaExistente.setSize(560, 412);
@@ -2498,6 +2617,7 @@ public class Pedidos extends javax.swing.JFrame {
 
     private void enviaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviaBtnActionPerformed
         verificarGuiaPrepagada("Envia");
+        consultaRates("Envia");
         this.carrierNameExistente.setText("Envia");
         this.formGuiaExistente.setTitle("Guia Existente Envia");
         this.formGuiaExistente.setSize(560, 412);
@@ -2511,6 +2631,7 @@ public class Pedidos extends javax.swing.JFrame {
 
     private void tracusaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tracusaBtnActionPerformed
         verificarGuiaPrepagada("Tracusa");
+        consultaRates("Tracusa");
         this.carrierNameExistente.setText("Tracusa");
         this.formGuiaExistente.setTitle("Guia Existente Tracusa");
         this.formGuiaExistente.setSize(560, 412);
@@ -2524,16 +2645,21 @@ public class Pedidos extends javax.swing.JFrame {
 
     private void crearGuiaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearGuiaBtnActionPerformed
         if("FedEx".equals(this.carrier_nombre_existente)){
+            consultaPaquetes();
+            consultaRates("FedEx");
             this.formCrearGuiaFedex.setTitle("Generar Guia Fedex");
             this.formCrearGuiaFedex.setSize(900, 815);
             this.formCrearGuiaFedex.setLocationRelativeTo(null);
             this.formCrearGuiaFedex.setAlwaysOnTop (true);
             this.formCrearGuiaFedex.setModalityType (ModalityType.APPLICATION_MODAL);
             this.formCrearGuiaFedex.setVisible(true);
+            this.tipo_de_paquete = "YOUR_PACKAGING";
         }
         
         if("Paquetexpress".equals(this.carrier_nombre_existente)){
             consultarDireccion("Paquetexpress");
+            consultaPaquetes();
+            consultaRates("Paquetexpress");
             this.formCrearGuia.setTitle("Generar Guia Paquetexpress");
             this.jLabel98.setText("Crear Guia Paquetexpress");
             this.formCrearGuia.setSize(880, 815);
@@ -2547,6 +2673,8 @@ public class Pedidos extends javax.swing.JFrame {
     private void guiaExistenteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guiaExistenteBtnActionPerformed
         
         if("FedEx".equals(this.carrier_nombre_existente)){
+            consultaRates("FedEx");
+            this.tipo_de_paquete = "YOUR_PACKAGING";
             this.carrierNameExistente.setText("FedEx");
             this.formGuiaExistente.setTitle("Guia Existente FedEx");
             this.formGuiaExistente.setSize(560, 412);
@@ -2557,6 +2685,8 @@ public class Pedidos extends javax.swing.JFrame {
         }
         
         if("Paquetexpress".equals(this.carrier_nombre_existente)){
+            consultaRates("Paquetexpress");
+            this.tipo_de_paquete = "ENVELOP";
             this.carrierNameExistente.setText("Paquetexpress");
             this.formGuiaExistente.setTitle("Guia Existente Paquetexpress");
             this.formGuiaExistente.setSize(560, 412);
@@ -2566,6 +2696,217 @@ public class Pedidos extends javax.swing.JFrame {
             this.formGuiaExistente.setVisible(true);
         }
     }//GEN-LAST:event_guiaExistenteBtnActionPerformed
+
+    private void jTextField68KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField68KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField68KeyTyped
+
+    private void jTextField69KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField69KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField69KeyTyped
+
+    private void jTextField70KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField70KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField70KeyTyped
+
+    private void jTextField71KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField71KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField71KeyTyped
+
+    private void jTextField36KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField36KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField36KeyTyped
+
+    private void jTextField37KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField37KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField37KeyTyped
+
+    private void jTextField38KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField38KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField38KeyTyped
+
+    private void jTextField54KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField54KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField54KeyTyped
+
+    private void jTextField55KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField55KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField55KeyTyped
+
+    private void jTextField56KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField56KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField56KeyTyped
+
+    private void jTextField57KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField57KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField57KeyTyped
+
+    private void jTextField24KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField24KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField24KeyTyped
+
+    private void jTextField49KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField49KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField49KeyTyped
+
+    private void jTextField50KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField50KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField50KeyTyped
+
+    private void jTextField51KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField51KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField51KeyTyped
+
+    private void jComboBox6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox6ActionPerformed
+        String tipo_box = jComboBox6.getSelectedItem().toString();
+        System.out.println("Selected es "+tipo_box);
+        if(tipo_box.equals("Otro")){
+            jTextField69.setText("");
+            jTextField70.setText("");
+            jTextField71.setText("");
+        }else{
+            try {
+                StringBuilder response = request.consultarBox(tipo_box);
+                JSONObject res = new JSONObject(response.toString());
+                JSONArray boxes = res.getJSONArray("result");
+                String largo = boxes.get(2).toString();
+                String ancho = boxes.get(3).toString();
+                String alto = boxes.get(4).toString();
+                jTextField69.setText(largo);
+                jTextField70.setText(ancho);
+                jTextField71.setText(alto);
+                String tipo_paq = boxes.get(1).toString();
+                if(tipo_paq.equals("Sobre")){
+                    this.tipo_de_paquete = "ENVELOP";
+                }else{
+                    this.tipo_de_paquete = "PACKETS";
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jComboBox6ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        String tipo_box = jComboBox1.getSelectedItem().toString();
+        System.out.println("Selected es "+tipo_box);
+        if(tipo_box.equals("Otro")){
+            jTextField36.setText("");
+            jTextField37.setText("");
+            jTextField38.setText("");
+        }else{
+            try {
+                StringBuilder response = request.consultarBox(tipo_box);
+                JSONObject res = new JSONObject(response.toString());
+                JSONArray boxes = res.getJSONArray("result");
+                String largo = boxes.get(2).toString();
+                String ancho = boxes.get(3).toString();
+                String alto = boxes.get(4).toString();
+                jTextField36.setText(largo);
+                jTextField37.setText(ancho);
+                jTextField38.setText(alto);
+                String tipo_paq = boxes.get(1).toString();
+            } catch (Exception ex) {
+                Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void cotizarGuia2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cotizarGuia2ActionPerformed
+        String largo = jTextField69.getText();
+        String ancho = jTextField70.getText();
+        String alto = jTextField71.getText() ;
+        String tipo_paquete = this.tipo_de_paquete ;
+        String peso = jTextField68.getText() ;
+        String estado = jComboBox5.getSelectedItem().toString() ;
+        String colonia = jTextField61.getText() ;
+        String calle = jTextField60.getText() ;
+        String no_ext = jTextField62.getText() ;
+        String no_int = jTextField63.getText() ;
+        String telefono = jTextField66.getText() ;
+        String codigo_postal = jTextField65.getText() ;
+        String destinatario = jTextField59.getText() ;
+        String email = jTextField67.getText() ;
+        String municipio = jTextField64.getText() ;
+        String asegurado = "false";
+        if(jCheckBox1.isSelected()){
+            asegurado = "true";
+        }
+        try {
+            StringBuilder response = request.cotizarPaqex(largo, ancho, alto, tipo_paquete, peso, estado, colonia, calle, no_ext, no_int, telefono, codigo_postal, destinatario, email, municipio, asegurado);
+            JSONObject res = new JSONObject(response.toString());
+            JSONArray resCotizar = res.getJSONArray("result");
+            if(resCotizar.get(0).toString().equals("200")){
+                this.jLabel121.setText("Costo de la Guia: "+resCotizar.get(1));
+            }else{
+                JOptionPane.showMessageDialog(dialogEtiqueta, resCotizar.get(1), "Alerta", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error al cotizar la orden con Paquetexpress", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }//GEN-LAST:event_cotizarGuia2ActionPerformed
     
     public void verificarOrden(String no_paquete){
         this.ordenMTFInput.setText("");
@@ -2663,6 +3004,52 @@ public class Pedidos extends javax.swing.JFrame {
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error al consultar la informacion de la Orden.", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void consultaPaquetes(){
+        DefaultComboBoxModel model = new DefaultComboBoxModel(new String[] {"Otro"});
+        jComboBox6.setModel(model);
+        jComboBox1.setModel(model);
+        try {
+            StringBuilder response = request.consultarBoxes();
+            JSONObject res = new JSONObject(response.toString());
+            JSONArray boxes = res.getJSONArray("result");
+            System.out.println(boxes.length());
+            System.out.println(boxes);
+           
+            for (int i = 0; i < boxes.length(); i++) {
+                model.addElement(boxes.get(i).toString());
+//                jComboBox6.addItem(boxes.get(i).toString());
+//                jComboBox1.addItem(boxes.get(i).toString());
+//                System.out.println(boxes.get(i).toString());
+            }
+            jComboBox6.setModel(model);
+            jComboBox1.setModel(model);
+        } catch (Exception ex) {
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void consultaRates(String paqueteria){
+        DefaultComboBoxModel model = new DefaultComboBoxModel(new String[] {"Internacional"});
+        jComboBox4.setModel(model);
+        tiposEnvio1.setModel(model);
+        try {
+            StringBuilder response = request.consultarRates(this.order_actual_id, paqueteria);
+            JSONObject res = new JSONObject(response.toString());
+            JSONArray tipo_envios = res.getJSONArray("result");
+            System.out.println(tipo_envios.length());
+            System.out.println(tipo_envios);
+           
+            for (int i = 0; i < tipo_envios.length(); i++) {
+                model.addElement(tipo_envios.get(i).toString());
+
+            }
+            jComboBox4.setModel(model);
+            tiposEnvio1.setModel(model);
+        } catch (Exception ex) {
             Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -3035,6 +3422,8 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JComboBox<String> jComboBox4;
     private javax.swing.JComboBox<String> jComboBox5;
@@ -3078,6 +3467,7 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
