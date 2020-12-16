@@ -14,12 +14,20 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.print.Book;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -28,6 +36,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.printing.PDFPageable;
+import org.apache.pdfbox.printing.PDFPrintable;
+import org.apache.pdfbox.printing.Scaling;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -37,7 +49,7 @@ public class Pedidos extends javax.swing.JFrame {
     String titlesEnvios[] = {"Seller", "Canal", "Orden Marketful", "No. Orden", "Cliente", "Paqueteria", "No. Guia", "Fecha Surtido", "Status", "Cancelar", "Ver"};
     DefaultTableModel model = new DefaultTableModel();
     DefaultTableModel modelEnvios = new DefaultTableModel();
-    File out = new File("Etiquetas/prueba_etiquetas.pdf");
+    File out = new File("Etiquetas/Etiquetas.pdf");
     HttpRequest request = new HttpRequest();
     public String url_etiquetas = null;
     public String user_name = "";
@@ -74,6 +86,7 @@ public class Pedidos extends javax.swing.JFrame {
     String order_actual_id = null;
     String listaEstados[] = {"AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHEM", "CHIAPA", "CHIHUAHUA", "CIUDAD DE MEXICO", "COHAUILA", "COLIMA", "DURANGO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MEXICO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS"};
     String tipo_de_paquete = "";
+    String rate_id = "";
     
 
     public Pedidos(Sesion session) {
@@ -429,8 +442,6 @@ public class Pedidos extends javax.swing.JFrame {
         jLabel64 = new javax.swing.JLabel();
         jComboBox3 = new javax.swing.JComboBox<>();
         jSeparator5 = new javax.swing.JSeparator();
-        jTextField35 = new javax.swing.JTextField();
-        jLabel65 = new javax.swing.JLabel();
         jComboBox4 = new javax.swing.JComboBox<>();
         jLabel66 = new javax.swing.JLabel();
         jTextField36 = new javax.swing.JTextField();
@@ -447,27 +458,14 @@ public class Pedidos extends javax.swing.JFrame {
         jLabel73 = new javax.swing.JLabel();
         jLabel74 = new javax.swing.JLabel();
         jLabel75 = new javax.swing.JLabel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        jTextPane2 = new javax.swing.JTextPane();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jSeparator6 = new javax.swing.JSeparator();
         jPanel11 = new javax.swing.JPanel();
         jLabel76 = new javax.swing.JLabel();
         jLabel77 = new javax.swing.JLabel();
         jTextField72 = new javax.swing.JTextField();
-        jLabel123 = new javax.swing.JLabel();
-        jScrollPane9 = new javax.swing.JScrollPane();
-        jPanel16 = new javax.swing.JPanel();
-        jTextField73 = new javax.swing.JTextField();
-        jLabel124 = new javax.swing.JLabel();
-        jTextField74 = new javax.swing.JTextField();
-        jLabel125 = new javax.swing.JLabel();
-        jLabel126 = new javax.swing.JLabel();
-        jTextField75 = new javax.swing.JTextField();
-        jLabel127 = new javax.swing.JLabel();
-        jTextField76 = new javax.swing.JTextField();
-        jTextField77 = new javax.swing.JTextField();
-        jTextField78 = new javax.swing.JTextField();
-        jLabel128 = new javax.swing.JLabel();
+        kejgbe = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         menuSec = new javax.swing.JTabbedPane();
@@ -893,7 +891,12 @@ public class Pedidos extends javax.swing.JFrame {
 
         jLabel115.setText("Dimensiones (cm)");
 
-        ConfirmarGuia2.setText("Confirmar");
+        ConfirmarGuia2.setText("Crear Guia");
+        ConfirmarGuia2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConfirmarGuia2ActionPerformed(evt);
+            }
+        });
 
         jPanel14.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), "Datos de la Orden"));
 
@@ -1187,18 +1190,17 @@ public class Pedidos extends javax.swing.JFrame {
         jLabel62.setText("Ciudad");
 
         cotizarGuia1.setText("Cotizar Guia");
+        cotizarGuia1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cotizarGuia1ActionPerformed(evt);
+            }
+        });
 
         jTextField34.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jLabel63.setText("Estado");
 
         jLabel64.setText("Numero de Telefono");
-
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jTextField35.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
-        jLabel65.setText("Fecha");
 
         jLabel66.setText("Tipo de Servicio");
 
@@ -1232,6 +1234,11 @@ public class Pedidos extends javax.swing.JFrame {
         jLabel70.setText("Dimensiones (cm)");
 
         ConfirmarGuia1.setText("Confirmar");
+        ConfirmarGuia1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConfirmarGuia1ActionPerformed(evt);
+            }
+        });
 
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), "Datos de la Orden"));
 
@@ -1245,8 +1252,9 @@ public class Pedidos extends javax.swing.JFrame {
 
         jLabel75.setText("Cliente");
 
-        jTextPane2.setEditable(false);
-        jScrollPane6.setViewportView(jTextPane2);
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane7.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -1255,7 +1263,7 @@ public class Pedidos extends javax.swing.JFrame {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel71)
@@ -1279,8 +1287,8 @@ public class Pedidos extends javax.swing.JFrame {
                 .addComponent(jLabel74)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel75)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(1, 1, 1)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -1315,84 +1323,7 @@ public class Pedidos extends javax.swing.JFrame {
 
         jTextField72.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jLabel123.setText("Numero de Paquetes");
-
-        jTextField73.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
-        jLabel124.setText("Alto");
-
-        jTextField74.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
-        jLabel125.setText("Ancho");
-
-        jLabel126.setText("Dimensiones (cm)");
-
-        jTextField75.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
-        jLabel127.setText("Largo");
-
-        jTextField76.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
-        jTextField77.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
-        jTextField78.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
-        jLabel128.setText("Dimensiones (cm)");
-
-        javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
-        jPanel16.setLayout(jPanel16Layout);
-        jPanel16Layout.setHorizontalGroup(
-            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel126)
-                    .addComponent(jLabel128))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel16Layout.createSequentialGroup()
-                        .addComponent(jLabel127)
-                        .addGap(50, 50, 50))
-                    .addGroup(jPanel16Layout.createSequentialGroup()
-                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField73, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
-                            .addComponent(jTextField78))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel125)
-                    .addComponent(jTextField74, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField77, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField75, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel124)
-                    .addComponent(jTextField76, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-        jPanel16Layout.setVerticalGroup(
-            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel16Layout.createSequentialGroup()
-                .addGap(46, 46, 46)
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel127)
-                    .addComponent(jLabel125)
-                    .addComponent(jLabel124))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField73, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField74, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField75, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel126))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField78, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField77, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField76, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel128))
-                .addContainerGap(115, Short.MAX_VALUE))
-        );
-
-        jScrollPane9.setViewportView(jPanel16);
+        kejgbe.setText("Peso");
 
         jLabel19.setText("Tipo de Paquete");
 
@@ -1442,12 +1373,10 @@ public class Pedidos extends javax.swing.JFrame {
                                         .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                             .addComponent(jLabel66)
                                             .addComponent(jLabel70)
-                                            .addComponent(jLabel65)
-                                            .addComponent(jLabel123)
+                                            .addComponent(kejgbe)
                                             .addComponent(jLabel19))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(jTextField35)
                                             .addComponent(jComboBox4, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formCrearGuiaFedexLayout.createSequentialGroup()
                                                 .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1474,11 +1403,10 @@ public class Pedidos extends javax.swing.JFrame {
                         .addGap(18, 18, 18)))
                 .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         formCrearGuiaFedexLayout.setVerticalGroup(
             formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1528,18 +1456,14 @@ public class Pedidos extends javax.swing.JFrame {
                                     .addComponent(jLabel64))
                                 .addGap(27, 27, 27)
                                 .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jTextField35, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel65))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGap(26, 26, 26)
                                 .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel66))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jTextField72, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel123))
+                                    .addComponent(kejgbe))
                                 .addGap(18, 18, 18)
                                 .addGroup(formCrearGuiaFedexLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1555,15 +1479,13 @@ public class Pedidos extends javax.swing.JFrame {
                                     .addComponent(jTextField37, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jTextField38, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel70))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
                                 .addComponent(cotizarGuia1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(ConfirmarGuia1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(formCrearGuiaFedexLayout.createSequentialGroup()
                                 .addGap(57, 57, 57)
                                 .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(55, 55, 55)
-                                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(formCrearGuiaFedexLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -2541,6 +2463,7 @@ public class Pedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_paqueteriaBtnActionPerformed
 
     private void ampmBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ampmBtnActionPerformed
+        this.carrier_nombre_existente = "AMPM";
         verificarGuiaPrepagada("AMPM");
         consultarDireccion("AMPM");
         consultaPaquetes();
@@ -2645,6 +2568,7 @@ public class Pedidos extends javax.swing.JFrame {
 
     private void crearGuiaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearGuiaBtnActionPerformed
         if("FedEx".equals(this.carrier_nombre_existente)){
+            consultarDireccion("FedEx");
             consultaPaquetes();
             consultaRates("FedEx");
             this.formCrearGuiaFedex.setTitle("Generar Guia Fedex");
@@ -2907,6 +2831,312 @@ public class Pedidos extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_cotizarGuia2ActionPerformed
+
+    private void ConfirmarGuia2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfirmarGuia2ActionPerformed
+        String largo = jTextField69.getText();
+        String ancho = jTextField70.getText();
+        String alto = jTextField71.getText() ;
+        String tipo_paquete = this.tipo_de_paquete ;
+        String peso = jTextField68.getText() ;
+        String estado = jComboBox5.getSelectedItem().toString() ;
+        String colonia = jTextField61.getText() ;
+        String calle = jTextField60.getText() ;
+        String no_ext = jTextField62.getText() ;
+        String no_int = jTextField63.getText() ;
+        String telefono = jTextField66.getText() ;
+        String codigo_postal = jTextField65.getText() ;
+        String destinatario = jTextField59.getText() ;
+        String email = jTextField67.getText() ;
+        String municipio = jTextField64.getText() ;
+        String asegurado = "false";
+        if(jCheckBox1.isSelected()){
+            asegurado = "true";
+        }
+        try {
+            StringBuilder response = null;
+            if(this.carrier_nombre_existente.equals("AMPM")){
+                response = request.crearguiaAmpm(largo, ancho, alto, tipo_paquete, peso, estado, colonia, calle, no_ext, no_int, telefono, codigo_postal, destinatario, email, municipio, this.order_actual_id);
+            }
+            if(this.carrier_nombre_existente.equals("Paquetexpress")){
+                response = request.crearguiaPaquex(largo, ancho, alto, tipo_paquete, peso, estado, colonia, calle, no_ext, no_int, telefono, codigo_postal, destinatario, email, municipio, asegurado, this.order_actual_id);
+            }
+            if(response != null){
+                JSONObject res = new JSONObject(response.toString());
+                JSONArray resCrear = res.getJSONArray("result");
+                System.out.println(resCrear);
+                if(resCrear.get(0).toString().equals("200")){
+                    String num_guia = resCrear.get(3).toString();
+                    String file_name = resCrear.get(2).toString();
+                    String file_url = resCrear.get(1).toString();
+                    int respuiestaGuia = guardarGuia(this.order_actual_id, num_guia, this.carrier_nombre_existente, peso, alto, ancho, largo, this.paqueteria_diferente, file_name);
+                    if(respuiestaGuia == 200){
+                        guardarPDF(file_url, file_name);
+                        JOptionPane.showMessageDialog(dialogEtiqueta, "La guia se guardo correctamente", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        iniciarHacerEnvios();
+                    }else{
+                        JOptionPane.showMessageDialog(dialogEtiqueta, respuiestaGuia, "Error", JOptionPane.ERROR_MESSAGE);
+                    }                    
+                }else{
+                    JOptionPane.showMessageDialog(dialogEtiqueta, resCrear.get(1), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }else{
+                JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error al crear la guia con "+this.carrier_nombre_existente, "Error", JOptionPane.ERROR_MESSAGE);
+            }          
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error interno al crear la guia con "+this.carrier_nombre_existente, "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_ConfirmarGuia2ActionPerformed
+
+    private void cotizarGuia1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cotizarGuia1ActionPerformed
+        this.rate_id = "";
+        String largo = jTextField36.getText();
+        String ancho = jTextField37.getText();
+        String alto = jTextField38.getText() ;
+        String tipo_paquete = this.tipo_de_paquete ;
+        String tipo_servicio = jComboBox4.getSelectedItem().toString();
+        String peso = jTextField72.getText() ;
+        String estado = jComboBox3.getSelectedItem().toString() ;
+        String seller = jTextField21.getText();
+        String line_1 = jTextField30.getText() ;
+        String line_2 = jTextField31.getText() ;
+        String telefono = jTextField34.getText() ;
+        String codigo_postal = jTextField32.getText() ;
+        String destinatario = jTextField29.getText() ;
+        String ciudad = jTextField33.getText() ;
+        try {
+            StringBuilder response = request.cotizarFedEx(largo, ancho, alto, peso, estado, telefono, codigo_postal, destinatario, line_1, line_2, ciudad, this.order_actual_id);
+            JSONObject res = new JSONObject(response.toString());
+            JSONArray resCotizar = res.getJSONArray("result");
+            if(resCotizar.get(0).toString().equals("200")){
+                this.jLabel77.setText("Costo de la Guia: "+resCotizar.get(1));
+                this.rate_id = resCotizar.get(3).toString();
+            }else{
+                JOptionPane.showMessageDialog(dialogEtiqueta, resCotizar.get(1), "Alerta", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error al cotizar la orden con FedEx", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_cotizarGuia1ActionPerformed
+
+    private void ConfirmarGuia1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfirmarGuia1ActionPerformed
+        String largo = jTextField36.getText();
+        String ancho = jTextField37.getText();
+        String alto = jTextField38.getText() ;
+        String peso = jTextField72.getText() ;
+        try {
+            StringBuilder response = request.crearGuiaFedex(this.rate_id, this.order_actual_id);
+            JSONObject res = new JSONObject(response.toString());
+            JSONArray resCrear = res.getJSONArray("result");
+            System.out.println(resCrear);
+            if(resCrear.get(0).toString().equals("200")){
+                String num_guia = resCrear.get(1).toString();
+                String file_name = resCrear.get(2).toString();
+                String file_url = resCrear.get(3).toString();
+                int respuiestaGuia = guardarGuia(this.order_actual_id, num_guia, "FedEx", peso, alto, ancho, largo, this.paqueteria_diferente, file_name);
+                if(respuiestaGuia == 200){
+                    guardarPDF(file_url, file_name);
+                    JOptionPane.showMessageDialog(dialogEtiqueta, "La guia se guardo correctamente", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    iniciarHacerEnvios();
+                }else{
+                    JOptionPane.showMessageDialog(dialogEtiqueta, respuiestaGuia, "Error", JOptionPane.ERROR_MESSAGE);
+                }                    
+            }else{
+                JOptionPane.showMessageDialog(dialogEtiqueta, resCrear.get(1), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error al crear la guia FedEx", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_ConfirmarGuia1ActionPerformed
+   
+    public int guardarGuia(String shopi_order_id, String num_guia, String carrier_name, String peso, String alto, String ancho, String largo, Boolean paqueteria_diferente, String file_name){
+        int salida = 400;
+        try {
+            String response = request.guardarGuia(shopi_order_id, num_guia, carrier_name, peso, alto, ancho, largo, paqueteria_diferente, file_name, this.sesion.getSessionToken());
+            System.out.println(response);
+            if(response.equals("200")){
+                salida = 200;
+            }else{
+                JOptionPane.showMessageDialog(dialogEtiqueta, response, "Mensaje", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error interno al guardar la guia en Marketful", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return salida;
+    }
+    
+    public void guardarPDF(String url, String file_name){
+        System.out.println("Vamos a guardar el pdf");
+        System.out.println(url);
+        System.out.println(file_name);
+        File outGuia = new File("Guias/"+file_name);
+        outGuia.getParentFile().mkdirs();
+        new Thread(new Download(url, outGuia)).start();
+        imprimirPDFTermica(file_name);
+    }
+    
+    public void imprimirPDFTermica(String file_name){
+        String impresora = "TSC TE200";
+        impresora = "OneNote for Windows 10"; // Borrar despues de pruebas
+        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+        System.out.println("Number of print services: " + printServices.length);
+        Boolean se_puede = false;
+        for(PrintService printService : printServices) {
+            System.out.println(printService.getName());
+            if (impresora.equals(printService.getName())) {
+                se_puede = true;
+            }
+        }
+
+        if(se_puede){
+            System.out.println("Impresora encontrada");
+            try {
+                PDDocument document = PDDocument.load(new File("Guias/"+file_name));
+                
+                PrintService myPrintService = findPrintService(impresora);
+                
+                PrinterJob job = PrinterJob.getPrinterJob();
+                job.setPageable(new PDFPageable(document));
+                try {
+                    job.setPrintService(myPrintService);
+                } catch (PrinterException ex) {
+                    System.out.println("Impresora no conectada");
+                    JOptionPane.showMessageDialog(dialogEtiqueta, "Impresora no conectada para imprimir la guia", "Error", JOptionPane.ERROR_MESSAGE);
+                    Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {
+                    job.print();
+                } catch (PrinterException ex) {
+                    System.out.println("No se pudo imprimir");
+                    JOptionPane.showMessageDialog(dialogEtiqueta, "Error al imprimir", "Error", JOptionPane.ERROR_MESSAGE);
+                    Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (IOException ex) {
+                System.out.println("No se encontro el documento");
+                JOptionPane.showMessageDialog(dialogEtiqueta, "No se encontro el archivo PDF", "Error", JOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            JOptionPane.showMessageDialog(dialogEtiqueta, "No se encontro ninguna impresora disponible", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Impresora NOT FOUND");
+        }
+    }
+    
+    public void imprimirPDFTermica4x8(String file_name){
+        String impresora = "TSC TE200";
+        impresora = "OneNote for Windows 10"; // Borrar despues de pruebas
+        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+        System.out.println("Number of print services: " + printServices.length);
+        Boolean se_puede = false;
+        for(PrintService printService : printServices) {
+            System.out.println(printService.getName());
+            if (impresora.equals(printService.getName())) {
+                se_puede = true;
+            }
+        }
+
+        if(se_puede){
+           System.out.println("Impresora encontrada");
+            try {
+                PDDocument document = PDDocument.load(new File(file_name));
+                PrintService myPrintService = findPrintService(impresora);
+                
+                PrinterJob job = PrinterJob.getPrinterJob();
+                Paper paper = new Paper();
+                paper.setSize(764, 482);
+                System.out.println("width es "+paper.getWidth() );
+                paper.setImageableArea(-230, 0, paper.getWidth(), paper.getHeight()); // no margins
+                
+                PageFormat pageFormat = new PageFormat();
+                pageFormat.setPaper(paper);
+                Book book = new Book();
+                book.append(new PDFPrintable(document, Scaling.SHRINK_TO_FIT), pageFormat, document.getNumberOfPages());
+                job.setPageable(book);
+
+                try {
+                    job.setPrintService(myPrintService);
+                } catch (PrinterException ex) {
+                    System.out.println("Impresora no conectada");
+                    JOptionPane.showMessageDialog(dialogEtiqueta, "Impresora no conectada para imprimir la guia", "Error", JOptionPane.ERROR_MESSAGE);
+                    Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {
+                    job.print();
+                } catch (PrinterException ex) {
+                    System.out.println("No se pudo imprimir");
+                    JOptionPane.showMessageDialog(dialogEtiqueta, "Error al imprimir", "Error", JOptionPane.ERROR_MESSAGE);
+                    Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (IOException ex) {
+                System.out.println("No se encontro el documento");
+                JOptionPane.showMessageDialog(dialogEtiqueta, "No se encontro el archivo PDF", "Error", JOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            JOptionPane.showMessageDialog(dialogEtiqueta, "No se encontro ninguna impresora disponible", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Impresora NOT FOUND");
+        }
+    }
+    
+    public void imprimirPDF(String file_name){
+        String impresora = "HP LaserJet M15w (94EC54)";
+        impresora = "OneNote for Windows 10"; // Borrar despues de pruebas
+        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+        System.out.println("Number of print services: " + printServices.length);
+        Boolean se_puede = false;
+        for(PrintService printService : printServices) {
+            System.out.println(printService.getName());
+            if (impresora.equals(printService.getName())) {
+                se_puede = true;
+            }
+        }
+
+        if(se_puede){
+            System.out.println("Impresora encontrada");
+            try {
+                PDDocument document = PDDocument.load(new File("Etiquetas/"+file_name));
+                
+                PrintService myPrintService = findPrintService(impresora);
+                
+                PrinterJob job = PrinterJob.getPrinterJob();
+                job.setPageable(new PDFPageable(document));
+                try {
+                    job.setPrintService(myPrintService);
+                } catch (PrinterException ex) {
+                    System.out.println("Impresora no conectada");
+                    JOptionPane.showMessageDialog(dialogEtiqueta, "Impresora no conectada para imprimir las etiquetas", "Error", JOptionPane.ERROR_MESSAGE);
+                    Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {
+                    job.print();
+                } catch (PrinterException ex) {
+                    System.out.println("No se pudo imprimir");
+                    JOptionPane.showMessageDialog(dialogEtiqueta, "Error al imprimir", "Error", JOptionPane.ERROR_MESSAGE);
+                    Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (IOException ex) {
+                System.out.println("No se encontro el documento");
+                JOptionPane.showMessageDialog(dialogEtiqueta, "No se encontro el archivo PDF de las etiquetas", "Error", JOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            JOptionPane.showMessageDialog(dialogEtiqueta, "No se encontro ninguna impresora disponible", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Impresora NOT FOUND");
+        }
+    }
+    
+    private static PrintService findPrintService(String printerName) {
+        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+        for (PrintService printService : printServices) {
+            if (printService.getName().trim().equals(printerName)) {
+                return printService;
+            }
+        }
+        return null;
+    }
     
     public void verificarOrden(String no_paquete){
         this.ordenMTFInput.setText("");
@@ -2968,6 +3198,7 @@ public class Pedidos extends javax.swing.JFrame {
             System.out.println(resOrden);
             DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>( this.listaEstados );
             jComboBox5.setModel(model);
+            jComboBox3.setModel(model);
             if("AMPM".equals(paqueteria) || "Paquetexpress".equals(paqueteria)){
                 JSONArray datosOrden =  (JSONArray) resOrden.get(1);
                 System.out.println(datosOrden);
@@ -2980,7 +3211,7 @@ public class Pedidos extends javax.swing.JFrame {
                 this.dirTextArea.setWrapStyleWord(true);
                 this.dirTextArea.setLineWrap(true);
                 this.dirTextArea.setEditable(false);
-                if(resOrden.get(2).toString() == "true"){
+                if("true".equals(resOrden.get(2).toString())){
                     this.jLabel18.setText("Alerta Cambio de direccion!");
                 }
                 JSONArray datosContacto =  (JSONArray) resOrden.get(8);
@@ -2995,6 +3226,38 @@ public class Pedidos extends javax.swing.JFrame {
                 this.jTextField65.setText(datosContacto.get(4).toString());
                 this.jTextField66.setText(datosContacto.get(5).toString());
                 this.jTextField67.setText(datosContacto.get(6).toString());
+            }
+            
+            if("FedEx".equals(paqueteria)){
+                JSONArray datosOrden =  (JSONArray) resOrden.get(1);
+                System.out.println(datosOrden);
+                this.jLabel71.setText("Fecha: "+datosOrden.get(0).toString());
+                this.jLabel72.setText("Seller: "+datosOrden.get(1).toString());
+                this.jLabel73.setText("Orden Seller: "+datosOrden.get(2).toString());
+                this.jLabel74.setText("Orden MKTF: "+datosOrden.get(3).toString());
+                this.jLabel75.setText("Cliente: "+datosOrden.get(4).toString());
+                this.jTextArea1.setText("Domicilio: "+resOrden.get(0).toString());
+                this.jTextArea1.setWrapStyleWord(true);
+                this.jTextArea1.setLineWrap(true);
+                this.jTextArea1.setEditable(false);
+                if("true".equals(resOrden.get(2).toString())){
+                    this.jLabel18.setText("Alerta Cambio de direccion!");
+                }
+                JSONArray datosContacto =  (JSONArray) resOrden.get(4);
+                System.out.println(datosContacto);
+                this.jTextField21.setText(datosContacto.get(5).toString());
+                this.jTextField29.setText(datosContacto.get(6).toString());
+                this.jTextField32.setText(datosContacto.get(2).toString());
+                this.jTextField33.setText(datosContacto.get(1).toString());
+                this.jTextField34.setText(datosContacto.get(3).toString());
+                String line_address1 = resOrden.get(6).toString();
+                String line_address2 = resOrden.get(7).toString();
+                if(!line_address1.equals("400")){
+                    this.jTextField30.setText(line_address1);
+                }
+                if(!line_address2.equals("400")){
+                    this.jTextField31.setText(line_address2);
+                }
             }
             if(paqueteria.equals("AMPM")){
                 this.cotizarGuia2.setVisible(false);
@@ -3080,6 +3343,7 @@ public class Pedidos extends javax.swing.JFrame {
         this.paqueteria_diferente = false;
         this.el_pais = "sin_pais";
         this.order_actual_id = null;
+        this.rate_id = "";
     }
     public void calcularNuevaPosicion(Integer row){
         tableData.setValueAt("Calculando...", this.row_active, tableData.convertColumnIndexToView(tableData.getColumn("Calcular").getModelIndex()) );
@@ -3455,12 +3719,6 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel120;
     private javax.swing.JLabel jLabel121;
-    private javax.swing.JLabel jLabel123;
-    private javax.swing.JLabel jLabel124;
-    private javax.swing.JLabel jLabel125;
-    private javax.swing.JLabel jLabel126;
-    private javax.swing.JLabel jLabel127;
-    private javax.swing.JLabel jLabel128;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
@@ -3486,7 +3744,6 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel62;
     private javax.swing.JLabel jLabel63;
     private javax.swing.JLabel jLabel64;
-    private javax.swing.JLabel jLabel65;
     private javax.swing.JLabel jLabel66;
     private javax.swing.JLabel jLabel67;
     private javax.swing.JLabel jLabel68;
@@ -3525,7 +3782,6 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
-    private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -3537,8 +3793,7 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JScrollPane jScrollPane9;
+    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator5;
@@ -3548,6 +3803,7 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JTabbedPane jTabbedPane4;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField20;
     private javax.swing.JTextField jTextField21;
     private javax.swing.JTextField jTextField23;
@@ -3558,7 +3814,6 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField32;
     private javax.swing.JTextField jTextField33;
     private javax.swing.JTextField jTextField34;
-    private javax.swing.JTextField jTextField35;
     private javax.swing.JTextField jTextField36;
     private javax.swing.JTextField jTextField37;
     private javax.swing.JTextField jTextField38;
@@ -3585,13 +3840,7 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField70;
     private javax.swing.JTextField jTextField71;
     private javax.swing.JTextField jTextField72;
-    private javax.swing.JTextField jTextField73;
-    private javax.swing.JTextField jTextField74;
-    private javax.swing.JTextField jTextField75;
-    private javax.swing.JTextField jTextField76;
-    private javax.swing.JTextField jTextField77;
-    private javax.swing.JTextField jTextField78;
-    private javax.swing.JTextPane jTextPane2;
+    private javax.swing.JLabel kejgbe;
     private javax.swing.JTabbedPane menuSec;
     private javax.swing.JLabel nextPage;
     private javax.swing.JLabel numOrden;

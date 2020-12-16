@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.json.JSONArray;
 
 /**
  *
@@ -755,6 +756,202 @@ public class HttpRequest {
         con.setRequestProperty("Content-Type", "application/json"); 
         con.setRequestProperty("Accept", "application/json");
         con.setRequestProperty("Content-Length", Integer.toString( postDataLength ));
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url_final);
+
+        BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+       
+        return response;
+    }
+    
+    public StringBuilder crearguiaPaquex(String largo, String ancho, String alto, String tipo_paquete, String peso, String estado, String colonia, String calle, String no_ext, String no_int, String telefono, String codigo_postal, String destinatario, String email, String municipio, String asegurado, String order_id) throws Exception {
+
+        String url_final = url_base + "labels/cotizar_guia_paquex_api";
+        
+        String urlParameters = "?largo="+URLEncoder.encode(largo, "utf-8")+"&ancho="+URLEncoder.encode(ancho, "utf-8")+"&alto="+URLEncoder.encode(alto, "utf-8")+"&tipo_paquete="+URLEncoder.encode(tipo_paquete, "utf-8")+"&peso="+URLEncoder.encode(peso, "utf-8")+"&estado="+URLEncoder.encode(estado, "utf-8")+"&colonia="+URLEncoder.encode(colonia, "utf-8")+"&calle="+URLEncoder.encode(calle, "utf-8")+"&no_ext="+URLEncoder.encode(no_ext, "utf-8")+"&no_int="+URLEncoder.encode(no_int, "utf-8")+"&telefono="+URLEncoder.encode(telefono, "utf-8")+"&codigo_postal="+URLEncoder.encode(codigo_postal, "utf-8")+"&destinatario="+URLEncoder.encode(destinatario, "utf-8")+"&email="+URLEncoder.encode(email, "utf-8")+"&municipio="+URLEncoder.encode(municipio, "utf-8")+"&asegurado="+URLEncoder.encode(asegurado, "utf-8")+"&orden="+URLEncoder.encode(order_id, "utf-8");
+        
+        url_final = url_final + urlParameters;
+        
+        byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
+        int postDataLength = postData.length;
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setRequestProperty("Content-Length", Integer.toString( postDataLength ));
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url_final);
+
+        BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+       
+        return response;
+    }
+    
+    public StringBuilder crearguiaAmpm(String largo, String ancho, String alto, String tipo_paquete, String peso, String estado, String colonia, String calle, String no_ext, String no_int, String telefono, String codigo_postal, String destinatario, String email, String municipio, String order_id) throws Exception {
+
+        String url_final = url_base + "labels/crear_guia_ampm_api";
+        
+        String urlParameters = "?largo="+URLEncoder.encode(largo, "utf-8")+"&ancho="+URLEncoder.encode(ancho, "utf-8")+"&alto="+URLEncoder.encode(alto, "utf-8")+"&tipo_paquete="+URLEncoder.encode(tipo_paquete, "utf-8")+"&peso="+URLEncoder.encode(peso, "utf-8")+"&estado="+URLEncoder.encode(estado, "utf-8")+"&colonia="+URLEncoder.encode(colonia, "utf-8")+"&calle="+URLEncoder.encode(calle, "utf-8")+"&no_ext="+URLEncoder.encode(no_ext, "utf-8")+"&no_int="+URLEncoder.encode(no_int, "utf-8")+"&telefono="+URLEncoder.encode(telefono, "utf-8")+"&codigo_postal="+URLEncoder.encode(codigo_postal, "utf-8")+"&destinatario="+URLEncoder.encode(destinatario, "utf-8")+"&email="+URLEncoder.encode(email, "utf-8")+"&municipio="+URLEncoder.encode(municipio, "utf-8")+"&orden="+URLEncoder.encode(order_id, "utf-8");
+        
+        url_final = url_final + urlParameters;
+        
+        byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
+        int postDataLength = postData.length;
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setRequestProperty("Content-Length", Integer.toString( postDataLength ));
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url_final);
+
+        BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+       
+        return response;
+    }
+    
+    public String guardarGuia(String shopi_order_id, String num_guia, String carrier_name, String peso, String alto, String ancho, String largo, Boolean paqueteria_diferente, String file_name, String token) throws Exception {
+        String paq_dif = "false";
+        if(paqueteria_diferente){
+            paq_dif = "true";
+        }
+        String url_final = url_base + "shopi_orders/guardar_guia_api";
+        
+        String urlParameters = "?largo="+URLEncoder.encode(largo, "utf-8")+"&ancho="+URLEncoder.encode(ancho, "utf-8")+"&alto="+URLEncoder.encode(alto, "utf-8")+"&shopi_order_id="+URLEncoder.encode(shopi_order_id, "utf-8")+"&peso="+URLEncoder.encode(peso, "utf-8")+"&num_guia="+URLEncoder.encode(num_guia, "utf-8")+"&carrier_name="+URLEncoder.encode(carrier_name, "utf-8")+"&paqueteria_diferente="+URLEncoder.encode(paq_dif, "utf-8")+"&file_name="+URLEncoder.encode(file_name, "utf-8");
+        
+        url_final = url_final + urlParameters;
+        
+        byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
+        int postDataLength = postData.length;
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setRequestProperty("Content-Length", Integer.toString( postDataLength ));
+        con.setRequestProperty("Authorization", "Bearer "+token);
+        con.setDoOutput(true);
+
+       int responseCode = con.getResponseCode();
+        String resultado = "400";
+        if(responseCode == 200){
+            System.out.println("\nSending 'GET' request to URL : " + url_final);
+            BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            JSONObject res = new JSONObject(response.toString());
+            System.out.println("here");
+            System.out.println(res);
+            if(res.has("status")){
+                System.out.println("Si tiene");
+                resultado = res.getString("errors");
+            }else{
+                System.out.println("no tiene");
+                JSONArray resCrearGuia = res.getJSONArray("result");
+                if(resCrearGuia.get(0).toString().equals("200")){
+                    resultado = "200";
+                }else{
+                    resultado = resCrearGuia.get(1).toString();
+                }
+            }
+            System.out.println(resultado);
+        }else if(responseCode == 403){
+            resultado = "Sesion Expirada";
+        }
+        return resultado;
+    }
+    
+    public StringBuilder cotizarFedEx(String largo, String ancho, String alto, String peso, String estado, String telefono, String codigo_postal, String destinatario, String line_1, String line_2, String ciudad, String orden_id) throws Exception {
+
+        String url_final = url_base + "labels/cotizar_fedex_api";
+        
+        String urlParameters = "?largo="+URLEncoder.encode(largo, "utf-8")+"&ancho="+URLEncoder.encode(ancho, "utf-8")+"&alto="+URLEncoder.encode(alto, "utf-8")+"&peso="+URLEncoder.encode(peso, "utf-8")+"&estado="+URLEncoder.encode(estado, "utf-8")+"&telefono="+URLEncoder.encode(telefono, "utf-8")+"&codigo_postal="+URLEncoder.encode(codigo_postal, "utf-8")+"&destinatario="+URLEncoder.encode(destinatario, "utf-8")+"&line_1="+URLEncoder.encode(line_1, "utf-8")+"&line_2="+URLEncoder.encode(line_2, "utf-8")+"&ciudad="+URLEncoder.encode(ciudad, "utf-8")+"&orden_id="+URLEncoder.encode(orden_id, "utf-8");
+        
+        url_final = url_final + urlParameters;
+        
+        byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
+        int postDataLength = postData.length;
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setRequestProperty("Content-Length", Integer.toString( postDataLength ));
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url_final);
+
+        BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+       
+        return response;
+    }
+    
+    public StringBuilder crearGuiaFedex(String rate_id, String order_id) throws Exception {
+
+        String url_final = url_base + "labels/crear_guia_ampm_api?fedex_rate_id="+rate_id+"&orden="+order_id;
+  
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
         con.setDoOutput(true);
 
         int responseCode = con.getResponseCode();
