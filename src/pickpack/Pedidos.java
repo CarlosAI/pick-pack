@@ -84,7 +84,7 @@ public class Pedidos extends javax.swing.JFrame {
     Boolean paqueteria_diferente = false;
     String el_pais = "sin_pais";
     String order_actual_id = null;
-    String listaEstados[] = {"AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHEM", "CHIAPA", "CHIHUAHUA", "CIUDAD DE MEXICO", "COHAUILA", "COLIMA", "DURANGO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MEXICO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS"};
+    String listaEstados[] = {"AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "CIUDAD DE MEXICO", "COHAUILA", "COLIMA", "DURANGO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MEXICO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS"};
     String tipo_de_paquete = "";
     String rate_id = "";
     
@@ -128,6 +128,7 @@ public class Pedidos extends javax.swing.JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setTable();
         setTableEnvios();
+        this.dialogEtiqueta.setAlwaysOnTop(true);
 //        this.jTabbedPane1.setEnabledAt(1, false);
 //        this.menuSec.setEnabledAt(2, false);
 //        tableData.setSelectionBackground(java.awt.Color.BLUE);
@@ -725,6 +726,11 @@ public class Pedidos extends javax.swing.JFrame {
         jLabel97.setText("Largo");
 
         jButton9.setText("Confirmar");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout formGuiaExistenteLayout = new javax.swing.GroupLayout(formGuiaExistente.getContentPane());
         formGuiaExistente.getContentPane().setLayout(formGuiaExistenteLayout);
@@ -831,6 +837,11 @@ public class Pedidos extends javax.swing.JFrame {
         jLabel105.setText("Ciudad");
 
         jTextField65.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField65.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField65KeyTyped(evt);
+            }
+        });
 
         jTextField66.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -1172,10 +1183,25 @@ public class Pedidos extends javax.swing.JFrame {
         jTextField29.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jTextField30.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField30.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField30KeyTyped(evt);
+            }
+        });
 
         jTextField31.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField31.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField31KeyTyped(evt);
+            }
+        });
 
         jTextField32.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField32.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField32KeyTyped(evt);
+            }
+        });
 
         jTextField33.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -1298,7 +1324,7 @@ public class Pedidos extends javax.swing.JFrame {
 
         jLabel76.setText("Costo de la Guia:");
 
-        jLabel77.setText("$4000");
+        jLabel77.setText("  ");
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
@@ -1308,7 +1334,7 @@ public class Pedidos extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel76)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel77)
+                .addComponent(jLabel77, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel11Layout.setVerticalGroup(
@@ -1322,6 +1348,11 @@ public class Pedidos extends javax.swing.JFrame {
         );
 
         jTextField72.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField72.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField72KeyTyped(evt);
+            }
+        });
 
         kejgbe.setText("Peso");
 
@@ -1876,6 +1907,7 @@ public class Pedidos extends javax.swing.JFrame {
         });
 
         consolidadoBtn.setText("CONSOLIDADO");
+        consolidadoBtn.setEnabled(false);
         consolidadoBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 consolidadoBtnActionPerformed(evt);
@@ -1883,6 +1915,11 @@ public class Pedidos extends javax.swing.JFrame {
         });
 
         willcallBtn.setText("WILL CALL");
+        willcallBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                willcallBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -1922,6 +1959,7 @@ public class Pedidos extends javax.swing.JFrame {
         jLabel23.setText(" ");
 
         esConsolidadoTextBox.setText("Consolidado");
+        esConsolidadoTextBox.setEnabled(false);
 
         jLabel16.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel16.setText("  ");
@@ -2123,7 +2161,7 @@ public class Pedidos extends javax.swing.JFrame {
         userWelcome.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         userWelcome.setText("Marketful");
 
-        btnActualizarPedidos.setText("Actualizar Pedidos");
+        btnActualizarPedidos.setText("Actualizar Tabla");
         btnActualizarPedidos.setToolTipText("Actualiza los pedidos actuales (No se generan nuevos pedidos)");
         btnActualizarPedidos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2139,8 +2177,12 @@ public class Pedidos extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Descargar PDF");
-        jButton1.setEnabled(false);
+        jButton1.setText("Imprimir Etiquetas");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         generarPedidos.setText("Generar Pedidos");
         generarPedidos.setToolTipText("Generar los pedidos pendientes");
@@ -2163,6 +2205,7 @@ public class Pedidos extends javax.swing.JFrame {
 
         donwloadPdf.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         donwloadPdf.setText("Ultimo Reporte de Etiquetas");
+        donwloadPdf.setEnabled(false);
         donwloadPdf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 donwloadPdfActionPerformed(evt);
@@ -2186,12 +2229,16 @@ public class Pedidos extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnGenerarPdf)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(userWelcome, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(generarPedidos)
+                .addComponent(generarPedidos)
+                .addGap(183, 183, 183)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(userWelcome, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26))
+                    .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -2223,33 +2270,40 @@ public class Pedidos extends javax.swing.JFrame {
     
     
     private void btnGenerarPdfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPdfActionPerformed
-        this.url_etiquetas = null;
-        btnGenerarPdf.setEnabled(false);
-        int respuestaEtiqueta = 500;
-        try {
-            respuestaEtiqueta = request.setGenerarPedidos();
-        } catch (Exception ex) {
-            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 100 - Error al generar las etiquetas", "Error", JOptionPane.ERROR_MESSAGE);
+        if (JOptionPane.showConfirmDialog(dialogEtiqueta, "¿Generar las Etiquetas?", "WARNING",
+            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            this.url_etiquetas = null;
+            btnGenerarPdf.setEnabled(false);
+            int respuestaEtiqueta = 500;
+            try {
+                respuestaEtiqueta = request.setGenerarPedidos();
+            } catch (Exception ex) {
+                Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 100 - Error al generar las etiquetas", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            if(respuestaEtiqueta != 200){
+                JOptionPane.showMessageDialog(dialogEtiqueta, "Ocurrio un Error al intentar Generar las Etiquetas, intentalo de nuevo", "Error", JOptionPane.ERROR_MESSAGE);
+            }else{
+               progressBar.setValue(0);
+               progressBar.setVisible(true);
+
+               Thread newThreadEtiquetas = new Thread(() -> {
+                    consultarStatusEtiquetas();
+               });
+               newThreadEtiquetas.start();
+            }
+        } else {
+            System.out.println("Sin generar");
         }
         
-        if(respuestaEtiqueta != 200){
-            JOptionPane.showMessageDialog(dialogEtiqueta, "Ocurrio un Error al intentar Generar las Etiquetas, intentalo de nuevo", "Error", JOptionPane.ERROR_MESSAGE);
-        }else{
-           progressBar.setValue(0);
-           progressBar.setVisible(true);
-           
-           Thread newThreadEtiquetas = new Thread(() -> {
-                consultarStatusEtiquetas();
-           });
-           newThreadEtiquetas.start();
-        }
     }//GEN-LAST:event_btnGenerarPdfActionPerformed
 
     private void donwloadPdfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_donwloadPdfActionPerformed
         // TODO add your handling code here:
         if(this.url_etiquetas !=  null){
-            new Thread(new Download(this.url_etiquetas, this.out)).start();
+            Download desc = new Download(this.url_etiquetas, this.out);
+            desc.run();
         }else{
             JOptionPane.showMessageDialog(dialogEtiqueta, "Ningun Documento PDF Encontrado", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -2463,19 +2517,25 @@ public class Pedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_paqueteriaBtnActionPerformed
 
     private void ampmBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ampmBtnActionPerformed
-        this.carrier_nombre_existente = "AMPM";
-        verificarGuiaPrepagada("AMPM");
-        consultarDireccion("AMPM");
-        consultaPaquetes();
-        this.formCrearGuia.setTitle("Generar Guia AMPM");
-        this.jLabel98.setText("Crear Guia AMPM");
-        this.formCrearGuia.setSize(880, 815);
-        this.formCrearGuia.setLocationRelativeTo(null);
-        this.formCrearGuia.setAlwaysOnTop (true);
-        this.formCrearGuia.setModalityType (ModalityType.APPLICATION_MODAL);
-        this.formCrearGuia.setVisible(true);
-        this.crearGuiaBtn.setEnabled(false);
-        this.guiaExistenteBtn.setEnabled(false);
+        enabledPaquex("AMPM");
+        if(!"el_pais".equals(this.el_pais) && !"mexico".equals(this.el_pais)){
+            JOptionPane.showMessageDialog(dialogEtiqueta, "No puedes crear una guia de Envio para un Envio Internacional", "Alerta", JOptionPane.WARNING_MESSAGE);
+        }else{
+            this.carrier_nombre_existente = "AMPM";
+            verificarGuiaPrepagada("AMPM");
+            consultarDireccion("AMPM");
+            consultaPaquetes();
+            this.formCrearGuia.setTitle("Generar Guia AMPM");
+            this.jLabel98.setText("Crear Guia AMPM");
+            this.formCrearGuia.setSize(880, 815);
+            this.formCrearGuia.setLocationRelativeTo(null);
+            this.formCrearGuia.setAlwaysOnTop (true);
+            this.formCrearGuia.setModalityType (ModalityType.APPLICATION_MODAL);
+            this.formCrearGuia.setVisible(true);
+            this.crearGuiaBtn.setEnabled(false);
+            this.guiaExistenteBtn.setEnabled(false);
+        }
+        
     }//GEN-LAST:event_ampmBtnActionPerformed
 
     private void paquexBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paquexBtnActionPerformed
@@ -2504,8 +2564,9 @@ public class Pedidos extends javax.swing.JFrame {
         this.formGuiaExistente.setSize(560, 412);
         this.formGuiaExistente.setLocationRelativeTo(null);
         this.formGuiaExistente.setAlwaysOnTop (true);
-        this.formGuiaExistente.setModalityType (ModalityType.APPLICATION_MODAL);
+//        this.formGuiaExistente.setModalityType (ModalityType.APPLICATION_MODAL);
         this.formGuiaExistente.setVisible(true);
+        jButton9.setEnabled(true);
         this.crearGuiaBtn.setEnabled(false);
         this.guiaExistenteBtn.setEnabled(false);
     }//GEN-LAST:event_upsBtnActionPerformed
@@ -2520,6 +2581,7 @@ public class Pedidos extends javax.swing.JFrame {
         this.formGuiaExistente.setAlwaysOnTop (true);
         this.formGuiaExistente.setModalityType (ModalityType.APPLICATION_MODAL);
         this.formGuiaExistente.setVisible(true);
+        jButton9.setEnabled(true);
         this.crearGuiaBtn.setEnabled(false);
         this.guiaExistenteBtn.setEnabled(false);
     }//GEN-LAST:event_dhlBtnActionPerformed
@@ -2534,6 +2596,7 @@ public class Pedidos extends javax.swing.JFrame {
         this.formGuiaExistente.setAlwaysOnTop (true);
         this.formGuiaExistente.setModalityType (ModalityType.APPLICATION_MODAL);
         this.formGuiaExistente.setVisible(true);
+        jButton9.setEnabled(true);
         this.crearGuiaBtn.setEnabled(false);
         this.guiaExistenteBtn.setEnabled(false);
     }//GEN-LAST:event_estafetaBtnActionPerformed
@@ -2548,6 +2611,7 @@ public class Pedidos extends javax.swing.JFrame {
         this.formGuiaExistente.setAlwaysOnTop (true);
         this.formGuiaExistente.setModalityType (ModalityType.APPLICATION_MODAL);
         this.formGuiaExistente.setVisible(true);
+        jButton9.setEnabled(true);
         this.crearGuiaBtn.setEnabled(false);
         this.guiaExistenteBtn.setEnabled(false);
     }//GEN-LAST:event_enviaBtnActionPerformed
@@ -2562,36 +2626,44 @@ public class Pedidos extends javax.swing.JFrame {
         this.formGuiaExistente.setAlwaysOnTop (true);
         this.formGuiaExistente.setModalityType (ModalityType.APPLICATION_MODAL);
         this.formGuiaExistente.setVisible(true);
+        jButton9.setEnabled(true);
         this.crearGuiaBtn.setEnabled(false);
         this.guiaExistenteBtn.setEnabled(false);
     }//GEN-LAST:event_tracusaBtnActionPerformed
 
     private void crearGuiaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearGuiaBtnActionPerformed
-        if("FedEx".equals(this.carrier_nombre_existente)){
-            consultarDireccion("FedEx");
-            consultaPaquetes();
-            consultaRates("FedEx");
-            this.formCrearGuiaFedex.setTitle("Generar Guia Fedex");
-            this.formCrearGuiaFedex.setSize(900, 815);
-            this.formCrearGuiaFedex.setLocationRelativeTo(null);
-            this.formCrearGuiaFedex.setAlwaysOnTop (true);
-            this.formCrearGuiaFedex.setModalityType (ModalityType.APPLICATION_MODAL);
-            this.formCrearGuiaFedex.setVisible(true);
-            this.tipo_de_paquete = "YOUR_PACKAGING";
-        }
+        if(!"el_pais".equals(this.el_pais) && !"mexico".equals(this.el_pais)){
+            JOptionPane.showMessageDialog(dialogEtiqueta, "No puedes crear una guia de Envio para un Envio Internacional", "Alerta", JOptionPane.WARNING_MESSAGE);
+        }else{
+            if("FedEx".equals(this.carrier_nombre_existente)){
+                eneabledFedex();
+                consultarDireccion("FedEx");
+                consultaPaquetes();
+                consultaRates("FedEx");
+                this.formCrearGuiaFedex.setTitle("Generar Guia Fedex");
+                this.formCrearGuiaFedex.setSize(900, 815);
+                this.formCrearGuiaFedex.setLocationRelativeTo(null);
+                this.formCrearGuiaFedex.setAlwaysOnTop (true);
+                this.formCrearGuiaFedex.setModalityType (ModalityType.APPLICATION_MODAL);
+                this.formCrearGuiaFedex.setVisible(true);
+                this.tipo_de_paquete = "YOUR_PACKAGING";
+            }
         
-        if("Paquetexpress".equals(this.carrier_nombre_existente)){
-            consultarDireccion("Paquetexpress");
-            consultaPaquetes();
-            consultaRates("Paquetexpress");
-            this.formCrearGuia.setTitle("Generar Guia Paquetexpress");
-            this.jLabel98.setText("Crear Guia Paquetexpress");
-            this.formCrearGuia.setSize(880, 815);
-            this.formCrearGuia.setLocationRelativeTo(null);
-            this.formCrearGuia.setAlwaysOnTop (true);
-            this.formCrearGuia.setModalityType (ModalityType.APPLICATION_MODAL);
-            this.formCrearGuia.setVisible(true);
+            if("Paquetexpress".equals(this.carrier_nombre_existente)){
+                enabledPaquex("paquex");
+                consultarDireccion("Paquetexpress");
+                consultaPaquetes();
+                consultaRates("Paquetexpress");
+                this.formCrearGuia.setTitle("Generar Guia Paquetexpress");
+                this.jLabel98.setText("Crear Guia Paquetexpress");
+                this.formCrearGuia.setSize(880, 815);
+                this.formCrearGuia.setLocationRelativeTo(null);
+                this.formCrearGuia.setAlwaysOnTop (true);
+                this.formCrearGuia.setModalityType (ModalityType.APPLICATION_MODAL);
+                this.formCrearGuia.setVisible(true);
+            }
         }
+
     }//GEN-LAST:event_crearGuiaBtnActionPerformed
 
     private void guiaExistenteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guiaExistenteBtnActionPerformed
@@ -2606,6 +2678,7 @@ public class Pedidos extends javax.swing.JFrame {
             this.formGuiaExistente.setAlwaysOnTop (true);
             this.formGuiaExistente.setModalityType (ModalityType.APPLICATION_MODAL);
             this.formGuiaExistente.setVisible(true);
+            jButton9.setEnabled(true);
         }
         
         if("Paquetexpress".equals(this.carrier_nombre_existente)){
@@ -2618,6 +2691,7 @@ public class Pedidos extends javax.swing.JFrame {
             this.formGuiaExistente.setAlwaysOnTop (true);
             this.formGuiaExistente.setModalityType (ModalityType.APPLICATION_MODAL);
             this.formGuiaExistente.setVisible(true);
+            jButton9.setEnabled(true);
         }
     }//GEN-LAST:event_guiaExistenteBtnActionPerformed
 
@@ -2797,6 +2871,8 @@ public class Pedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void cotizarGuia2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cotizarGuia2ActionPerformed
+        cotizarGuia2.setEnabled(false);
+        formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         String largo = jTextField69.getText();
         String ancho = jTextField70.getText();
         String alto = jTextField71.getText() ;
@@ -2816,23 +2892,43 @@ public class Pedidos extends javax.swing.JFrame {
         if(jCheckBox1.isSelected()){
             asegurado = "true";
         }
-        try {
-            StringBuilder response = request.cotizarPaqex(largo, ancho, alto, tipo_paquete, peso, estado, colonia, calle, no_ext, no_int, telefono, codigo_postal, destinatario, email, municipio, asegurado);
-            JSONObject res = new JSONObject(response.toString());
-            JSONArray resCotizar = res.getJSONArray("result");
-            if(resCotizar.get(0).toString().equals("200")){
-                this.jLabel121.setText("Costo de la Guia: "+resCotizar.get(1));
-            }else{
-                JOptionPane.showMessageDialog(dialogEtiqueta, resCotizar.get(1), "Alerta", JOptionPane.WARNING_MESSAGE);
+        if( !"".equals(largo.replaceAll("\\s+","")) && !"".equals(ancho.replaceAll("\\s+","")) && !"".equals(alto.replaceAll("\\s+","")) && 
+            !"".equals(peso.replaceAll("\\s+","")) && !"".equals(estado.replaceAll("\\s+","")) && 
+            !"".equals(colonia.replaceAll("\\s+","")) && !"".equals(calle.replaceAll("\\s+","")) && !"".equals(no_ext.replaceAll("\\s+","")) && 
+            !"".equals(telefono.replaceAll("\\s+","")) && !"".equals(codigo_postal.replaceAll("\\s+","")) 
+            && !"".equals(destinatario.replaceAll("\\s+","")) && !"".equals(email.replaceAll("\\s+","")) && !"".equals(municipio.replaceAll("\\s+","")) ){
+            
+            try {
+                StringBuilder response = request.cotizarPaqex(largo, ancho, alto, tipo_paquete, peso, estado, colonia, calle, no_ext, no_int, telefono, codigo_postal, destinatario, email, municipio, asegurado);
+                JSONObject res = new JSONObject(response.toString());
+                JSONArray resCotizar = res.getJSONArray("result");
+                if(resCotizar.get(0).toString().equals("200")){
+                    disabledPaquex();
+                    formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                    this.jLabel121.setText("Costo de la Guia: $"+resCotizar.get(1));
+                }else{
+                    formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                    cotizarGuia2.setEnabled(true);
+                    JOptionPane.showMessageDialog(dialogEtiqueta, resCotizar.get(1), "Alerta", JOptionPane.WARNING_MESSAGE);
+                }
+            } catch (Exception ex) {
+                formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                cotizarGuia2.setEnabled(true);
+                JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error al cotizar la orden con Paquetexpress", "Error", JOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error al cotizar la orden con Paquetexpress", "Error", JOptionPane.ERROR_MESSAGE);
-            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }else{
+            formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            cotizarGuia2.setEnabled(true);
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Debes completar el formulario", "Alerta", JOptionPane.WARNING_MESSAGE);
         }
+       
         
     }//GEN-LAST:event_cotizarGuia2ActionPerformed
 
     private void ConfirmarGuia2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfirmarGuia2ActionPerformed
+        formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ConfirmarGuia2.setEnabled(false);
         String largo = jTextField69.getText();
         String ancho = jTextField70.getText();
         String alto = jTextField71.getText() ;
@@ -2852,43 +2948,87 @@ public class Pedidos extends javax.swing.JFrame {
         if(jCheckBox1.isSelected()){
             asegurado = "true";
         }
-        try {
-            StringBuilder response = null;
-            if(this.carrier_nombre_existente.equals("AMPM")){
-                response = request.crearguiaAmpm(largo, ancho, alto, tipo_paquete, peso, estado, colonia, calle, no_ext, no_int, telefono, codigo_postal, destinatario, email, municipio, this.order_actual_id);
-            }
-            if(this.carrier_nombre_existente.equals("Paquetexpress")){
-                response = request.crearguiaPaquex(largo, ancho, alto, tipo_paquete, peso, estado, colonia, calle, no_ext, no_int, telefono, codigo_postal, destinatario, email, municipio, asegurado, this.order_actual_id);
-            }
-            if(response != null){
-                JSONObject res = new JSONObject(response.toString());
-                JSONArray resCrear = res.getJSONArray("result");
-                System.out.println(resCrear);
-                if(resCrear.get(0).toString().equals("200")){
-                    String num_guia = resCrear.get(3).toString();
-                    String file_name = resCrear.get(2).toString();
-                    String file_url = resCrear.get(1).toString();
-                    int respuiestaGuia = guardarGuia(this.order_actual_id, num_guia, this.carrier_nombre_existente, peso, alto, ancho, largo, this.paqueteria_diferente, file_name);
-                    if(respuiestaGuia == 200){
-                        guardarPDF(file_url, file_name);
-                        JOptionPane.showMessageDialog(dialogEtiqueta, "La guia se guardo correctamente", "Success", JOptionPane.INFORMATION_MESSAGE);
-                        iniciarHacerEnvios();
+        if( !"".equals(largo.replaceAll("\\s+","")) && !"".equals(ancho.replaceAll("\\s+","")) && !"".equals(alto.replaceAll("\\s+","")) && 
+            !"".equals(peso.replaceAll("\\s+","")) && !"".equals(estado.replaceAll("\\s+","")) && 
+            !"".equals(colonia.replaceAll("\\s+","")) && !"".equals(calle.replaceAll("\\s+","")) && !"".equals(no_ext.replaceAll("\\s+","")) && 
+            !"".equals(telefono.replaceAll("\\s+","")) && !"".equals(codigo_postal.replaceAll("\\s+","")) 
+            && !"".equals(destinatario.replaceAll("\\s+","")) && !"".equals(email.replaceAll("\\s+","")) && !"".equals(municipio.replaceAll("\\s+","")) ){
+            
+            try {
+                if(this.carrier_nombre_existente.equals("AMPM")){
+                    String[] responseAmpm = request.crearguiaAmpm(largo, ancho, alto, tipo_paquete, peso, estado, colonia, calle, no_ext, no_int, telefono, codigo_postal, destinatario, email, municipio, this.order_actual_id, this.sesion.getSessionToken());
+                    System.out.println(Arrays.toString(responseAmpm));
+                    if(responseAmpm[0].equals("200")){
+                        String num_guia = responseAmpm[4];
+                        String file_name = responseAmpm[1];
+                        String file_url = responseAmpm[2];
+                        int respuiestaGuia = guardarGuia("Economico", this.order_actual_id, num_guia, this.carrier_nombre_existente, peso, alto, ancho, largo, this.paqueteria_diferente, file_name);
+                        if(respuiestaGuia == 200){
+                            guardarPDF(file_url, file_name);
+                            JOptionPane.showMessageDialog(dialogEtiqueta, "La guia se guardo correctamente", "Success", JOptionPane.INFORMATION_MESSAGE);
+                            iniciarHacerEnvios();
+                            formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                            formCrearGuia.setVisible(false);
+                        }else{
+                            formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                            ConfirmarGuia2.setEnabled(true);
+                            JOptionPane.showMessageDialog(dialogEtiqueta, respuiestaGuia, "Error", JOptionPane.ERROR_MESSAGE);
+                        }      
                     }else{
-                        JOptionPane.showMessageDialog(dialogEtiqueta, respuiestaGuia, "Error", JOptionPane.ERROR_MESSAGE);
-                    }                    
-                }else{
-                    JOptionPane.showMessageDialog(dialogEtiqueta, resCrear.get(1), "Error", JOptionPane.ERROR_MESSAGE);
+                        formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                        ConfirmarGuia2.setEnabled(true);
+                        JOptionPane.showMessageDialog(dialogEtiqueta, responseAmpm[1], "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
-            }else{
-                JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error al crear la guia con "+this.carrier_nombre_existente, "Error", JOptionPane.ERROR_MESSAGE);
-            }          
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error interno al crear la guia con "+this.carrier_nombre_existente, "Error", JOptionPane.ERROR_MESSAGE);
-            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+                if(this.carrier_nombre_existente.equals("Paquetexpress")){
+                    StringBuilder response = request.crearguiaPaquex(largo, ancho, alto, tipo_paquete, peso, estado, colonia, calle, no_ext, no_int, telefono, codigo_postal, destinatario, email, municipio, asegurado, this.order_actual_id);
+                    if(response != null){
+                        JSONObject res = new JSONObject(response.toString());
+                        JSONArray resCrear = res.getJSONArray("result");
+                        System.out.println(resCrear);
+                        if(resCrear.get(0).toString().equals("200")){
+                            String num_guia = resCrear.get(3).toString();
+                            String file_name = resCrear.get(2).toString();
+                            String file_url = resCrear.get(1).toString();
+                            int respuiestaGuia = guardarGuia("Economico", this.order_actual_id, num_guia, this.carrier_nombre_existente, peso, alto, ancho, largo, this.paqueteria_diferente, file_name);
+                            if(respuiestaGuia == 200){
+                                guardarPDF(file_url, file_name);
+                                JOptionPane.showMessageDialog(dialogEtiqueta, "La guia se guardo correctamente", "Success", JOptionPane.INFORMATION_MESSAGE);
+                                iniciarHacerEnvios();
+                                formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                            }else{
+                                ConfirmarGuia2.setEnabled(true);
+                                formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                                JOptionPane.showMessageDialog(dialogEtiqueta, respuiestaGuia, "Error", JOptionPane.ERROR_MESSAGE);
+                            }                    
+                        }else{
+                            formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                            ConfirmarGuia2.setEnabled(true);
+                            JOptionPane.showMessageDialog(dialogEtiqueta, resCrear.get(1), "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }else{
+                        formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                        ConfirmarGuia2.setEnabled(true);
+                        JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error al crear la guia con "+this.carrier_nombre_existente, "Error", JOptionPane.ERROR_MESSAGE);
+                    }    
+                }
+            } catch (Exception ex) {
+                formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                ConfirmarGuia2.setEnabled(true);
+                JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error interno al crear la guia con "+this.carrier_nombre_existente, "Error", JOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            ConfirmarGuia2.setEnabled(true);
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Debes completar el formulario", "Alerta", JOptionPane.WARNING_MESSAGE);
         }
+
     }//GEN-LAST:event_ConfirmarGuia2ActionPerformed
 
     private void cotizarGuia1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cotizarGuia1ActionPerformed
+        formCrearGuiaFedex.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        cotizarGuia1.setEnabled(false);
         this.rate_id = "";
         String largo = jTextField36.getText();
         String ancho = jTextField37.getText();
@@ -2904,27 +3044,50 @@ public class Pedidos extends javax.swing.JFrame {
         String codigo_postal = jTextField32.getText() ;
         String destinatario = jTextField29.getText() ;
         String ciudad = jTextField33.getText() ;
-        try {
-            StringBuilder response = request.cotizarFedEx(largo, ancho, alto, peso, estado, telefono, codigo_postal, destinatario, line_1, line_2, ciudad, this.order_actual_id);
-            JSONObject res = new JSONObject(response.toString());
-            JSONArray resCotizar = res.getJSONArray("result");
-            if(resCotizar.get(0).toString().equals("200")){
-                this.jLabel77.setText("Costo de la Guia: "+resCotizar.get(1));
-                this.rate_id = resCotizar.get(3).toString();
-            }else{
-                JOptionPane.showMessageDialog(dialogEtiqueta, resCotizar.get(1), "Alerta", JOptionPane.WARNING_MESSAGE);
+        String tipo_envio = "STANDARD_OVERNIGHT";
+        if(  !"".equals(largo.replaceAll("\\s+","")) && !"".equals(ancho.replaceAll("\\s+","")) && !"".equals(alto.replaceAll("\\s+","")) && 
+             !"".equals(peso.replaceAll("\\s+","")) && !"".equals(seller.replaceAll("\\s+","")) && !"".equals(line_1.replaceAll("\\s+","")) && !"".equals(line_2.replaceAll("\\s+","")) && 
+             !"".equals(telefono.replaceAll("\\s+","")) && !"".equals(codigo_postal.replaceAll("\\s+","")) && !"".equals(destinatario.replaceAll("\\s+","")) && 
+             !"".equals(ciudad.replaceAll("\\s+",""))  ){
+            
+            if(tipo_servicio.toLowerCase().equals("economico")){
+                tipo_envio = "FEDEX_EXPRESS_SAVER";
             }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error al cotizar la orden con FedEx", "Error", JOptionPane.ERROR_MESSAGE);
-            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                StringBuilder response = request.cotizarFedEx(tipo_envio, largo, ancho, alto, peso, estado, telefono, codigo_postal, destinatario, line_1, line_2, ciudad, this.order_actual_id);
+                JSONObject res = new JSONObject(response.toString());
+                JSONArray resCotizar = res.getJSONArray("result");
+                if(resCotizar.get(0).toString().equals("200")){
+                    disabledFedex();
+                    formCrearGuiaFedex.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                    this.jLabel77.setText("$ "+resCotizar.get(1));
+                    this.rate_id = resCotizar.get(3).toString();
+                }else{
+                    formCrearGuiaFedex.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                    cotizarGuia1.setEnabled(true);
+                    JOptionPane.showMessageDialog(dialogEtiqueta, resCotizar.get(1), "Alerta", JOptionPane.WARNING_MESSAGE);
+                }
+            } catch (Exception ex) {
+                formCrearGuiaFedex.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                cotizarGuia1.setEnabled(true);
+                JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error al cotizar la orden con FedEx", "Error", JOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            cotizarGuia1.setEnabled(true);
+            formCrearGuiaFedex.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Debes completar el formulario", "Alerta", JOptionPane.WARNING_MESSAGE);
         }
+        
     }//GEN-LAST:event_cotizarGuia1ActionPerformed
 
     private void ConfirmarGuia1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfirmarGuia1ActionPerformed
+        formCrearGuiaFedex.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         String largo = jTextField36.getText();
         String ancho = jTextField37.getText();
         String alto = jTextField38.getText() ;
         String peso = jTextField72.getText() ;
+        String tipo_envio = jComboBox4.getSelectedItem().toString();
         try {
             StringBuilder response = request.crearGuiaFedex(this.rate_id, this.order_actual_id);
             JSONObject res = new JSONObject(response.toString());
@@ -2934,27 +3097,215 @@ public class Pedidos extends javax.swing.JFrame {
                 String num_guia = resCrear.get(1).toString();
                 String file_name = resCrear.get(2).toString();
                 String file_url = resCrear.get(3).toString();
-                int respuiestaGuia = guardarGuia(this.order_actual_id, num_guia, "FedEx", peso, alto, ancho, largo, this.paqueteria_diferente, file_name);
+                int respuiestaGuia = guardarGuia(tipo_envio, this.order_actual_id, num_guia, "FedEx", peso, alto, ancho, largo, this.paqueteria_diferente, file_name);
                 if(respuiestaGuia == 200){
                     guardarPDF(file_url, file_name);
                     JOptionPane.showMessageDialog(dialogEtiqueta, "La guia se guardo correctamente", "Success", JOptionPane.INFORMATION_MESSAGE);
                     iniciarHacerEnvios();
-                }else{
+                    formCrearGuiaFedex.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                    formCrearGuiaFedex.setVisible(false);
+                }else{formCrearGuiaFedex.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                    
                     JOptionPane.showMessageDialog(dialogEtiqueta, respuiestaGuia, "Error", JOptionPane.ERROR_MESSAGE);
                 }                    
             }else{
+                formCrearGuiaFedex.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 JOptionPane.showMessageDialog(dialogEtiqueta, resCrear.get(1), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception ex) {
+            formCrearGuiaFedex.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error al crear la guia FedEx", "Error", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_ConfirmarGuia1ActionPerformed
-   
-    public int guardarGuia(String shopi_order_id, String num_guia, String carrier_name, String peso, String alto, String ancho, String largo, Boolean paqueteria_diferente, String file_name){
+
+    private void willcallBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_willcallBtnActionPerformed
+        int respuiestaGuia = guardarGuia("", this.order_actual_id, "will_call", "will_call", "0", "0", "0", "0", this.paqueteria_diferente, "");
+        if(respuiestaGuia == 200){
+            JOptionPane.showMessageDialog(dialogEtiqueta, "La guia se guardo correctamente", "Success", JOptionPane.INFORMATION_MESSAGE);
+            iniciarHacerEnvios();
+        }else{
+            JOptionPane.showMessageDialog(dialogEtiqueta, respuiestaGuia, "Error", JOptionPane.ERROR_MESSAGE);
+        }    
+    }//GEN-LAST:event_willcallBtnActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        formGuiaExistente.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        jButton9.setEnabled(false);
+        String largo = jTextField57.getText();
+        String ancho = jTextField56.getText();
+        String alto = jTextField55.getText() ;
+        String peso = jTextField54.getText() ;
+        String carrier_name = carrierNameExistente.getText();
+        String num_guia = jTextField53.getText();
+        String tipo_envio = tiposEnvio1.getSelectedItem().toString();
+        if( !"".equals(largo.replaceAll("\\s+","")) && !"".equals(ancho.replaceAll("\\s+","")) && !"".equals(alto.replaceAll("\\s+","")) && 
+            !"".equals(peso.replaceAll("\\s+","")) && !"".equals(carrier_name.replaceAll("\\s+","")) && 
+            !"".equals(num_guia.replaceAll("\\s+",""))){
+             int respuiestaGuia = guardarGuia(tipo_envio, this.order_actual_id, num_guia, carrier_name, peso, alto, ancho, largo, this.paqueteria_diferente, "");
+            
+             if(respuiestaGuia == 200){
+                JOptionPane.showMessageDialog(dialogEtiqueta, "La guia se guardo correctamente", "Success", JOptionPane.INFORMATION_MESSAGE);
+                iniciarHacerEnvios();
+                formGuiaExistente.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                formGuiaExistente.setVisible(false);
+            }else{
+                jButton9.setEnabled(true);
+                formGuiaExistente.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                JOptionPane.showMessageDialog(dialogEtiqueta, respuiestaGuia, "Error", JOptionPane.ERROR_MESSAGE);
+            } 
+        }else{
+            jButton9.setEnabled(true);
+            formGuiaExistente.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Debes completar el formulario", "Alerta", JOptionPane.WARNING_MESSAGE);
+        }
+          
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (JOptionPane.showConfirmDialog(dialogEtiqueta, "¿Imprimir las etiquetas?", "WARNING",
+            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            imprimirPDF("Etiquetas.pdf");
+        } else {
+            System.out.println("Sin imprimir");
+        }
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTextField30KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField30KeyTyped
+        int caracteres = jTextField30.getText().length();
+        if(caracteres > 35){
+            jLabel59.setForeground(Color.red);
+            jLabel59.setText("Direccion 1 (+35 caracteres)");
+        }else{
+            jLabel59.setForeground(Color.black);
+            jLabel59.setText("Direccion 1");
+        }
+    }//GEN-LAST:event_jTextField30KeyTyped
+
+    private void jTextField31KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField31KeyTyped
+        int caracteres = jTextField31.getText().length();
+        if(caracteres > 35){
+            jLabel60.setForeground(Color.red);
+            jLabel60.setText("Direccion 2 (+35 caracteres)");
+        }else{
+            jLabel60.setForeground(Color.black);
+            jLabel60.setText("Direccion 2");
+        }
+    }//GEN-LAST:event_jTextField31KeyTyped
+
+    private void jTextField65KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField65KeyTyped
+        char validar  = evt.getKeyChar();
+        if(!Character.isDigit(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField65KeyTyped
+
+    private void jTextField72KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField72KeyTyped
+        char validar  = evt.getKeyChar();
+        if(Character.isLetter(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField72KeyTyped
+
+    private void jTextField32KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField32KeyTyped
+        char validar  = evt.getKeyChar();
+        if(!Character.isDigit(validar)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField32KeyTyped
+    
+    public void disabledFedex(){
+        jTextField36.setEditable(false);
+        jTextField37.setEditable(false);
+        jTextField38.setEditable(false) ;
+        jComboBox4.setEnabled(false);
+        jTextField72.setEditable(false) ;
+        jComboBox3.setEnabled(false) ;
+        jComboBox1.setEnabled(false);
+        jTextField21.setEditable(false);
+        jTextField30.setEditable(false) ;
+        jTextField31.setEditable(false) ;
+        jTextField34.setEditable(false) ;
+        jTextField32.setEditable(false) ;
+        jTextField29.setEditable(false) ;
+        jTextField33.setEditable(false) ;
+        ConfirmarGuia1.setEnabled(true);
+    }
+    public void eneabledFedex(){
+        jTextField36.setEditable(true);
+        jTextField37.setEditable(true);
+        jTextField38.setEditable(true) ;
+        jComboBox4.setEnabled(true);
+        jTextField72.setEditable(true) ;
+        jComboBox3.setEnabled(true) ;
+        jComboBox1.setEnabled(true);
+        jTextField21.setEditable(true);
+        jTextField30.setEditable(true) ;
+        jTextField31.setEditable(true) ;
+        jTextField34.setEditable(true) ;
+        jTextField32.setEditable(true) ;
+        jTextField29.setEditable(true) ;
+        jTextField33.setEditable(true) ;
+        ConfirmarGuia1.setEnabled(false);
+        cotizarGuia1.setEnabled(true);
+        jLabel77.setText("");
+    }
+    
+    public void disabledPaquex(){
+        ConfirmarGuia2.setEnabled(true);
+        jTextField69.setEditable(false);
+        jTextField70.setEditable(false);
+        jTextField71.setEditable(false) ;
+        jTextField68.setEditable(false) ;
+        jComboBox5.setEnabled(false) ;
+        jComboBox6.setEnabled(false);
+        jTextField61.setEditable(false) ;
+        jTextField60.setEditable(false) ;
+        jTextField62.setEditable(false) ;
+        jTextField63.setEditable(false) ;
+        jTextField66.setEditable(false) ;
+        jTextField65.setEditable(false) ;
+        jTextField59.setEditable(false) ;
+        jTextField67.setEditable(false) ;
+        jTextField64.setEditable(false) ;
+        jTextField58.setEditable(false);
+    }
+    
+    public void enabledPaquex(String carrier){
+        jLabel121.setText("");
+        jTextField69.setEditable(true);
+        jTextField70.setEditable(true);
+        jTextField71.setEditable(true) ;
+        jTextField68.setEditable(true) ;
+        jComboBox5.setEnabled(true) ;
+        jComboBox6.setEnabled(true);
+        jTextField61.setEditable(true) ;
+        jTextField60.setEditable(true) ;
+        jTextField62.setEditable(true) ;
+        jTextField63.setEditable(true) ;
+        jTextField66.setEditable(true) ;
+        jTextField65.setEditable(true) ;
+        jTextField59.setEditable(true) ;
+        jTextField67.setEditable(true) ;
+        jTextField64.setEditable(true) ;
+        jTextField58.setEditable(true);
+        if(carrier.equals("AMPM")){
+            ConfirmarGuia2.setEnabled(true);
+        }else{
+            cotizarGuia2.setEnabled(true);
+            ConfirmarGuia2.setEnabled(false);
+        }
+        
+    }
+    
+    public int guardarGuia(String tipo_envio, String shopi_order_id, String num_guia, String carrier_name, String peso, String alto, String ancho, String largo, Boolean paqueteria_diferente, String file_name){
         int salida = 400;
         try {
-            String response = request.guardarGuia(shopi_order_id, num_guia, carrier_name, peso, alto, ancho, largo, paqueteria_diferente, file_name, this.sesion.getSessionToken());
+            String response = request.guardarGuia(tipo_envio, shopi_order_id, num_guia, carrier_name, peso, alto, ancho, largo, paqueteria_diferente, file_name, this.sesion.getSessionToken());
             System.out.println(response);
             if(response.equals("200")){
                 salida = 200;
@@ -2974,13 +3325,14 @@ public class Pedidos extends javax.swing.JFrame {
         System.out.println(file_name);
         File outGuia = new File("Guias/"+file_name);
         outGuia.getParentFile().mkdirs();
-        new Thread(new Download(url, outGuia)).start();
+        Download desc = new Download(url, outGuia);
+        desc.run();
         imprimirPDFTermica(file_name);
     }
     
     public void imprimirPDFTermica(String file_name){
         String impresora = "TSC TE200";
-        impresora = "OneNote for Windows 10"; // Borrar despues de pruebas
+        //impresora = "OneNote for Windows 10"; // Borrar despues de pruebas
         PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
         System.out.println("Number of print services: " + printServices.length);
         Boolean se_puede = false;
@@ -3027,7 +3379,7 @@ public class Pedidos extends javax.swing.JFrame {
     
     public void imprimirPDFTermica4x8(String file_name){
         String impresora = "TSC TE200";
-        impresora = "OneNote for Windows 10"; // Borrar despues de pruebas
+        //impresora = "OneNote for Windows 10"; // Borrar despues de pruebas
         PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
         System.out.println("Number of print services: " + printServices.length);
         Boolean se_puede = false;
@@ -3083,7 +3435,7 @@ public class Pedidos extends javax.swing.JFrame {
     
     public void imprimirPDF(String file_name){
         String impresora = "HP LaserJet M15w (94EC54)";
-        impresora = "OneNote for Windows 10"; // Borrar despues de pruebas
+        //impresora = "OneNote for Windows 10"; // Borrar despues de pruebas
         PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
         System.out.println("Number of print services: " + printServices.length);
         Boolean se_puede = false;
@@ -3156,7 +3508,7 @@ public class Pedidos extends javax.swing.JFrame {
                 this.jLabel16.setText("Paqueteria: "+resPaquete.get(5).toString());
                 this.jLabel17.setText("Tipo de envio: "+resPaquete.get(4).toString());
                 this.paqueteriaBtn.setEnabled(true);
-                this.consolidadoBtn.setEnabled(true);
+//                this.consolidadoBtn.setEnabled(true);
                 this.willcallBtn.setEnabled(true);
                 if("200".equals(resPaquete.get(6).toString())){
                     this.candidato_dostavista = true;
@@ -3201,6 +3553,7 @@ public class Pedidos extends javax.swing.JFrame {
             jComboBox3.setModel(model);
             if("AMPM".equals(paqueteria) || "Paquetexpress".equals(paqueteria)){
                 JSONArray datosOrden =  (JSONArray) resOrden.get(1);
+                System.out.println("Datos orden es");
                 System.out.println(datosOrden);
                 this.jLabel116.setText("Fecha: "+datosOrden.get(0).toString());
                 this.jLabel117.setText("Seller: "+datosOrden.get(1).toString());
@@ -3215,6 +3568,7 @@ public class Pedidos extends javax.swing.JFrame {
                     this.jLabel18.setText("Alerta Cambio de direccion!");
                 }
                 JSONArray datosContacto =  (JSONArray) resOrden.get(8);
+                System.out.println("Datos contacto es");
                 System.out.println(datosContacto);
                 this.jTextField58.setText(datosContacto.get(7).toString());
                 this.jTextField59.setText(datosContacto.get(8).toString());
@@ -3225,7 +3579,7 @@ public class Pedidos extends javax.swing.JFrame {
                 this.jTextField64.setText(datosContacto.get(9).toString());
                 this.jTextField65.setText(datosContacto.get(4).toString());
                 this.jTextField66.setText(datosContacto.get(5).toString());
-                this.jTextField67.setText(datosContacto.get(6).toString());
+                this.jTextField67.setText(datosContacto.get(6).toString());               
             }
             
             if("FedEx".equals(paqueteria)){
@@ -3258,7 +3612,39 @@ public class Pedidos extends javax.swing.JFrame {
                 if(!line_address2.equals("400")){
                     this.jTextField31.setText(line_address2);
                 }
+                
+                int caracteres = jTextField30.getText().length();
+                if(caracteres > 35){
+                    jLabel59.setForeground(Color.red);
+                    jLabel59.setText("Direccion 1 (+35 caracteres)");
+                }else{
+                    jLabel59.setForeground(Color.black);
+                    jLabel59.setText("Direccion 1");
+                }
+                
+                caracteres = jTextField31.getText().length();
+                if(caracteres > 35){
+                    jLabel60.setForeground(Color.red);
+                    jLabel60.setText("Direccion 2 (+35 caracteres)");
+                }else{
+                    jLabel60.setForeground(Color.black);
+                    jLabel60.setText("Direccion 2");
+                }
             }
+            
+                String el_estado = resOrden.get(10).toString();
+                System.out.println("El estado es "+el_estado);
+//                el_estado = "kjwsfnbvs";
+                if(model.getIndexOf(el_estado) == -1){
+                    System.out.println("No esta");
+                    jLabel106.setForeground(Color.red);
+                }else{
+                    jLabel106.setForeground(Color.black);
+                    System.out.println("Si esta");
+                    jComboBox5.setSelectedItem(el_estado);
+                    jComboBox3.setSelectedItem(el_estado);
+                }
+                
             if(paqueteria.equals("AMPM")){
                 this.cotizarGuia2.setVisible(false);
             }
@@ -3325,7 +3711,7 @@ public class Pedidos extends javax.swing.JFrame {
     public void iniciarHacerEnvios(){
         this.carrier_nombre_existente = "";
         this.paqueteriaBtn.setEnabled(false);
-        this.consolidadoBtn.setEnabled(false);
+//        this.consolidadoBtn.setEnabled(false);
         this.willcallBtn.setEnabled(false);
         this.ampmBtn.setEnabled(false);
         this.fedexBtn.setEnabled(false);
@@ -3632,7 +4018,9 @@ public class Pedidos extends javax.swing.JFrame {
             progressBar.setVisible(false);
             this.url_etiquetas = respuesta_pdf;
             this.out.getParentFile().mkdirs();
-            new Thread(new Download(this.url_etiquetas, this.out)).start();
+//            new Thread(new Download(this.url_etiquetas, this.out)).start();
+            Download desc = new Download(this.url_etiquetas, this.out);
+            desc.run();
 //            JOptionPane.showMessageDialog(dialogEtiqueta, "URL de Etiquetas es" + this.url_etiquetas, "Success", JOptionPane.INFORMATION_MESSAGE);
             btnGenerarPdf.setEnabled(true);
             donwloadPdf.setEnabled(true);

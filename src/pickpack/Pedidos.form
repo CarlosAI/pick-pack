@@ -359,6 +359,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Confirmar"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton9ActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JComboBox" name="tiposEnvio1">
           <Properties>
@@ -721,6 +724,9 @@
               </Border>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextField65KeyTyped"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextField66">
           <Properties>
@@ -1292,6 +1298,9 @@
               </Border>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextField30KeyTyped"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextField31">
           <Properties>
@@ -1301,6 +1310,9 @@
               </Border>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextField31KeyTyped"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextField32">
           <Properties>
@@ -1310,6 +1322,9 @@
               </Border>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextField32KeyTyped"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextField33">
           <Properties>
@@ -1586,7 +1601,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel76" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jLabel77" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel77" min="-2" pref="50" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -1612,7 +1627,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel77">
               <Properties>
-                <Property name="text" type="java.lang.String" value="$4000"/>
+                <Property name="text" type="java.lang.String" value="  "/>
               </Properties>
             </Component>
           </SubComponents>
@@ -1625,6 +1640,9 @@
               </Border>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextField72KeyTyped"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="kejgbe">
           <Properties>
@@ -1683,6 +1701,7 @@
                       <KeyStroke key="Shift+Ctrl+D"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Ultimo Reporte de Etiquetas"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="donwloadPdfActionPerformed"/>
@@ -1724,13 +1743,18 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="btnGenerarPdf" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jButton1" min="-2" pref="126" max="-2" attributes="0"/>
+              <Component id="jButton1" min="-2" pref="178" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="userWelcome" alignment="1" min="-2" pref="234" max="-2" attributes="0"/>
+              <Component id="generarPedidos" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="183" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="generarPedidos" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
+                      <Component id="userWelcome" min="-2" pref="234" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="48" max="32767" attributes="0"/>
                       <Component id="progressBar" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -2483,6 +2507,7 @@
                     <Component class="javax.swing.JButton" name="consolidadoBtn">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="CONSOLIDADO"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="consolidadoBtnActionPerformed"/>
@@ -2492,6 +2517,9 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="WILL CALL"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="willcallBtnActionPerformed"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -2577,6 +2605,7 @@
                     <Component class="javax.swing.JCheckBox" name="esConsolidadoTextBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Consolidado"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel16">
@@ -2786,7 +2815,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnActualizarPedidos">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Actualizar Pedidos"/>
+        <Property name="text" type="java.lang.String" value="Actualizar Tabla"/>
         <Property name="toolTipText" type="java.lang.String" value="Actualiza los pedidos actuales (No se generan nuevos pedidos)"/>
       </Properties>
       <Events>
@@ -2806,9 +2835,11 @@
     </Component>
     <Component class="javax.swing.JButton" name="jButton1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Descargar PDF"/>
-        <Property name="enabled" type="boolean" value="false"/>
+        <Property name="text" type="java.lang.String" value="Imprimir Etiquetas"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="generarPedidos">
       <Properties>
