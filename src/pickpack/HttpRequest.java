@@ -68,10 +68,11 @@ public class HttpRequest {
         return res2;
     }
     
-    public StringBuilder getPedidos() throws Exception {
+    public StringBuilder getPedidos(String seller, String seller_sku, String num_order, String orden_mktf) throws Exception {
 
         String url_final = url_base + "pedidos/get_pedidos";
-
+        String urlParameters = "?seller_name="+URLEncoder.encode(seller, "utf-8")+"&seller_sku="+URLEncoder.encode(seller_sku, "utf-8")+"&shopi_order_name="+URLEncoder.encode(num_order, "utf-8")+"&shopi_order_id="+URLEncoder.encode(orden_mktf, "utf-8");
+        url_final = url_final + urlParameters;
         URL obj = new URL(url_final);
         
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -881,8 +882,7 @@ public class HttpRequest {
         }
         String url_final = url_base + "shopi_orders/guardar_guia_api";
         
-        String urlParameters = "?tipo_envio="+tipo_envio+"&largo="+URLEncoder.encode(largo, "utf-8")+"&ancho="+URLEncoder.encode(ancho, "utf-8")+"&alto="+URLEncoder.encode(alto, "utf-8")+"&shopi_order_id="+URLEncoder.encode(shopi_order_id, "utf-8")+"&peso="+URLEncoder.encode(peso, "utf-8")+"&num_guia="+URLEncoder.encode(num_guia, "utf-8")+"&carrier_name="+URLEncoder.encode(carrier_name, "utf-8")+"&paqueteria_diferente="+URLEncoder.encode(paq_dif, "utf-8")+"&file_name="+URLEncoder.encode(file_name, "utf-8");
-        
+        String urlParameters = "?tipo_envio="+URLEncoder.encode(tipo_envio, "utf-8")+"&largo="+URLEncoder.encode(largo, "utf-8")+"&ancho="+URLEncoder.encode(ancho, "utf-8")+"&alto="+URLEncoder.encode(alto, "utf-8")+"&shopi_order_id="+URLEncoder.encode(shopi_order_id, "utf-8")+"&peso="+URLEncoder.encode(peso, "utf-8")+"&num_guia="+URLEncoder.encode(num_guia, "utf-8")+"&carrier_name="+URLEncoder.encode(carrier_name, "utf-8")+"&paqueteria_diferente="+URLEncoder.encode(paq_dif, "utf-8")+"&file_name="+URLEncoder.encode(file_name, "utf-8");
         url_final = url_final + urlParameters;
         
         byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
