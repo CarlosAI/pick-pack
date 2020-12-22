@@ -3424,6 +3424,17 @@ public class Pedidos extends javax.swing.JFrame {
         imprimirPDFTermica(file_name);
     }
     
+    public void guardarPDF4x8(String url, String file_name){
+        System.out.println("Vamos a guardar el pdf 4x8");
+        System.out.println(url);
+        System.out.println(file_name);
+        File outGuia = new File("Guias/"+file_name);
+        outGuia.getParentFile().mkdirs();
+        Download desc = new Download(url, outGuia);
+        desc.run();
+        imprimirPDFTermica4x8(file_name);
+    }
+    
     public void imprimirPDFTermica(String file_name){
         String impresora = "TSC TE200";
         if(this.sesion.getSessionUserId() == 237){
@@ -3626,6 +3637,11 @@ public class Pedidos extends javax.swing.JFrame {
                 }
                 if("200".equals(resPaquete.get(7).toString())){
                     this.candidato_ampm = true;
+                }
+                if("guia_termica".equals(resPaquete.get(1).toString())){
+                    if(JOptionPane.showConfirmDialog(dialogEtiqueta, "Esta Orden tiene una guia Cargada ¿Deseas imprimirla?", "WARNING",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+                        guardarPDF4x8(resPaquete.get(3).toString(), "Guia_termica_"+this.order_actual_id+".pdf");
+                    }
                 }
             }else{
                 JOptionPane.showMessageDialog(dialogEtiqueta,resPaquete.get(1) , "Alerta", JOptionPane.WARNING_MESSAGE);
