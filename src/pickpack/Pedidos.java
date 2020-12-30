@@ -10,6 +10,7 @@ import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.List;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -24,16 +25,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -46,7 +52,7 @@ import org.json.JSONObject;
 public class Pedidos extends javax.swing.JFrame {
     
     String titles[] = {"#","Seller", "Tipo Envio", "Canal", "# Orden", "Orden Marketful", "Descripcion", "Seller SKU", "Cantidad Anunciada", "Cantidad Surtida", "Posicion", "Surtir", "Calcular"};
-    String titlesEnvios[] = {"Seller", "Canal", "Orden Marketful", "No. Orden", "Cliente", "Paqueteria", "No. Guia", "Fecha Surtido", "Status", "Cancelar", "Ver"};
+    String titlesEnvios[] = {"Seller", "Canal", "Orden Marketful", "No. Orden", "Cliente", "Paqueteria", "No. Guia", "Fecha Surtido", "Status", "Cancelar"};
     DefaultTableModel model = new DefaultTableModel();
     DefaultTableModel modelEnvios = new DefaultTableModel();
     File out = new File("Etiquetas/Etiquetas.pdf");
@@ -64,6 +70,8 @@ public class Pedidos extends javax.swing.JFrame {
     String pedido_iniciado = null;
     Integer row_active = null;
     ColorCelda c = new ColorCelda();
+    Logger logger = Logger.getLogger("MyLog");
+    FileHandler fh;
     
     String filtroSeller = "";
     String filtroOrden = "";
@@ -87,10 +95,33 @@ public class Pedidos extends javax.swing.JFrame {
     String listaEstados[] = {"AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "CIUDAD DE MEXICO", "COHAUILA", "COLIMA", "DURANGO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MEXICO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS"};
     String tipo_de_paquete = "";
     String rate_id = "";
+    String tipo_envio_actual = "";
+    Boolean next_day = false;
+    Boolean economico = false;
+    Boolean crear_guia_fedex = false;
+    String impresoraTermica1 = "";
+    String impresoraTermica2 = "";
+    String impresoraPDF = "";
     
 
     public Pedidos(Sesion session) {
         this.sesion = session;
+        try {  
+            fh = new FileHandler("logs.log");  
+            logger.addHandler(fh);
+            SimpleFormatter formatter = new SimpleFormatter();  
+            fh.setFormatter(formatter);   
+            logger.info("Session Actual en Login");  
+
+        } catch (SecurityException e) {  
+            e.printStackTrace();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+        }
+        logger.info("Session Actual en Login");
+        logger.info(sesion.getSessionToken());
+        logger.info(sesion.getSessionUserName());
+        logger.info(sesion.getSessionUserId().toString());
         System.out.println("Session Actual en Login");
         System.out.println(sesion.getSessionToken());
         System.out.println(sesion.getSessionUserName());
@@ -144,7 +175,61 @@ public class Pedidos extends javax.swing.JFrame {
 //        for (int i = 0; i <= 12; i++) {
 //            tableData.getColumnModel().getColumn(i).setCellRenderer(c);
 //        }
+
+        ordenMTFInput.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), doHacerEnvios);
+        positionText.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), doNombrePosicion);
+        skuText.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), doSellerSku);
+        orderText.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), doOrdenPaquete);
+        
+        if(this.sesion.getSessionUserId() == 247){
+            this.impresoraTermica1 = "\\\\Laptop-h3109let\\tsc te200";
+            this.impresoraTermica2 = "\\\\Laptop-h3109let\\tsc te200";
+        }else{
+            this.impresoraTermica1 = "TSC TE200";
+            this.impresoraTermica2 = "TSC TE200";
+        }
     }
+    
+    Action doHacerEnvios = new AbstractActionImpl(){
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(!"".equals(ordenMTFInput.getText().replaceAll("\\s+",""))){
+                logger.log(Level.INFO, "Se ingreso la orden {0}", ordenMTFInput.getText());
+                iniciarHacerEnvios();
+                if(esConsolidadoTextBox.isSelected()){
+                    verificarConsolidado();
+                }else{
+                    verificarOrden(ordenMTFInput.getText().replaceAll("\\s+",""));
+                }
+            }else{
+                JOptionPane.showMessageDialog(dialogEtiqueta, "Ingresa un valor correcto.", "Alerta", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    };
+    
+    Action doNombrePosicion = new AbstractActionImpl(){
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            logger.log(Level.INFO, "Se ingreso la posicion {0}", positionText.getText());
+            verificarPosition();
+        }
+    };
+    
+    Action doSellerSku = new AbstractActionImpl(){
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            logger.log(Level.INFO, "Se ingreso el sku {0}", skuText.getText());
+            verificarSKUPedido();
+        }
+    };
+    
+    Action doOrdenPaquete = new AbstractActionImpl(){
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            logger.log(Level.INFO, "Se ingreso el paquete {0}", orderText.getText());
+            verificarTrackingPedido();
+        }
+    };
     
     public final void setTable(String seller, String seller_sku, String num_order, String orden_mktf){
         lista.clear();
@@ -173,6 +258,8 @@ public class Pedidos extends javax.swing.JFrame {
             JSONArray los_pedidos = res.getJSONArray("pedidos");
             System.out.println(los_pedidos.length());
             System.out.println(los_pedidos);
+            logger.info("Los pedidos son");
+            logger.info(los_pedidos.toString());
             
 //            JSONObject elemento = los_pedidos.getJSONObject(0);
 //            System.out.println(elemento);
@@ -249,8 +336,6 @@ public class Pedidos extends javax.swing.JFrame {
         envioTabla.setRowHeight(30);
         JButton btn1 = new JButton("Cancelar Guia");
         btn1.setName("cancelar_guia");
-        JButton btn2 = new JButton("Ver");
-        btn2.setName("ver_envio");
         JButton btn3 = new JButton("Cancelar Guia");
         btn3.setName("cancelar_guia_disabled");
         btn3.setEnabled(false);
@@ -260,6 +345,8 @@ public class Pedidos extends javax.swing.JFrame {
             JSONArray los_envios = res.getJSONArray("envios");
             System.out.println(los_envios.length());
             System.out.println(los_envios);
+            logger.info("Los envios son");
+            logger.info(los_envios.toString());
             System.out.println("total paginas es "+res.getString("pages"));
             this.totalPagesEnvios = Integer.parseInt(res.getString("pages"));
             if(this.totalPagesEnvios == 0){
@@ -287,7 +374,7 @@ public class Pedidos extends javax.swing.JFrame {
                 JSONObject elemento = los_envios.getJSONObject(i);
                 
                 listaEnvios.add(elemento.getString("id"));
-                Object row[] = new Object[11];
+                Object row[] = new Object[10];
                 row[0] = elemento.getString("nombre_seller");
                 row[1] = elemento.getString("site");
                 row[2] = elemento.getString("shopi_order_id");
@@ -320,12 +407,10 @@ public class Pedidos extends javax.swing.JFrame {
                     row[9] = btn1;
                 }else{
                     row[9] = btn3;
-                }
-                
-                row[10] = btn2;           
+                }          
                 modelEnvios.addRow(row);
             }
-            for (int i = 0; i <= 10; i++) {
+            for (int i = 0; i <= 9; i++) {
                 envioTabla.getColumnModel().getColumn(i).setCellRenderer(c);
             }
         } catch (Exception ex) {
@@ -469,6 +554,19 @@ public class Pedidos extends javax.swing.JFrame {
         kejgbe = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
+        impresorasConfig = new javax.swing.JDialog();
+        jLabel25 = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        jSeparator3 = new javax.swing.JSeparator();
+        jComboBox2 = new javax.swing.JComboBox<>();
+        jLabel27 = new javax.swing.JLabel();
+        jLabel28 = new javax.swing.JLabel();
+        jComboBox7 = new javax.swing.JComboBox<>();
+        jSeparator4 = new javax.swing.JSeparator();
+        jLabel29 = new javax.swing.JLabel();
+        jComboBox8 = new javax.swing.JComboBox<>();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         menuSec = new javax.swing.JTabbedPane();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
@@ -564,6 +662,7 @@ public class Pedidos extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         donwloadPdf = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         javax.swing.GroupLayout dialogEtiquetaLayout = new javax.swing.GroupLayout(dialogEtiqueta.getContentPane());
         dialogEtiqueta.getContentPane().setLayout(dialogEtiquetaLayout);
@@ -1533,6 +1632,109 @@ public class Pedidos extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        impresorasConfig.setTitle("Configurar Impresoras");
+        impresorasConfig.setResizable(false);
+
+        jLabel25.setText("Guias Termicas 4x6 ");
+
+        jLabel26.setText("(Paquetexpress, AMPM, Fedex)");
+
+        jLabel27.setText("Guais Termicas 4x8");
+
+        jLabel28.setText("Mercadolibre");
+
+        jLabel29.setText("Etiquetas Pedidos");
+
+        jButton4.setText("Guardar Cambios");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setText("Cancelar");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout impresorasConfigLayout = new javax.swing.GroupLayout(impresorasConfig.getContentPane());
+        impresorasConfig.getContentPane().setLayout(impresorasConfigLayout);
+        impresorasConfigLayout.setHorizontalGroup(
+            impresorasConfigLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(impresorasConfigLayout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(impresorasConfigLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(impresorasConfigLayout.createSequentialGroup()
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(impresorasConfigLayout.createSequentialGroup()
+                        .addComponent(jLabel28)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(impresorasConfigLayout.createSequentialGroup()
+                        .addComponent(jLabel29)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jComboBox8, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(36, 36, 36))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, impresorasConfigLayout.createSequentialGroup()
+                        .addGroup(impresorasConfigLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jSeparator3)
+                            .addGroup(impresorasConfigLayout.createSequentialGroup()
+                                .addGroup(impresorasConfigLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel25)
+                                    .addComponent(jLabel26))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
+                                .addComponent(jComboBox7, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(36, 36, 36))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, impresorasConfigLayout.createSequentialGroup()
+                        .addGroup(impresorasConfigLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jSeparator4)
+                            .addGroup(impresorasConfigLayout.createSequentialGroup()
+                                .addComponent(jLabel27)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(38, 38, 38))))
+        );
+        impresorasConfigLayout.setVerticalGroup(
+            impresorasConfigLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(impresorasConfigLayout.createSequentialGroup()
+                .addGroup(impresorasConfigLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(impresorasConfigLayout.createSequentialGroup()
+                        .addGap(49, 49, 49)
+                        .addComponent(jLabel25)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel26))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, impresorasConfigLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jComboBox7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(14, 14, 14)))
+                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(impresorasConfigLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel27)
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(impresorasConfigLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(impresorasConfigLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel28)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(impresorasConfigLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel29)
+                            .addComponent(jComboBox8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(22, 109, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, impresorasConfigLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(impresorasConfigLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton5)
+                            .addComponent(jButton4))
+                        .addContainerGap())))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         menuSec.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -1565,24 +1767,6 @@ public class Pedidos extends javax.swing.JFrame {
         jLabel12.setText("Cantidad Surtida:");
 
         cantidadSurtida.setText("      ");
-
-        positionText.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                positionTextKeyPressed(evt);
-            }
-        });
-
-        skuText.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                skuTextKeyPressed(evt);
-            }
-        });
-
-        orderText.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                orderTextKeyPressed(evt);
-            }
-        });
 
         cancelarSurtido.setText("Cancelar Surtido");
 
@@ -1921,6 +2105,11 @@ public class Pedidos extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        envioTabla.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                envioTablaMouseClicked(evt);
+            }
+        });
         jScrollPane4.setViewportView(envioTabla);
 
         pagAnterior.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
@@ -2034,11 +2223,6 @@ public class Pedidos extends javax.swing.JFrame {
         jPanel6.setPreferredSize(new java.awt.Dimension(12, 191));
 
         ordenMTFInput.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        ordenMTFInput.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                ordenMTFInputKeyPressed(evt);
-            }
-        });
 
         jLabel23.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel23.setText(" ");
@@ -2300,6 +2484,14 @@ public class Pedidos extends javax.swing.JFrame {
 
         jMenu2.add(jMenu3);
 
+        jMenuItem1.setText("Configuracion impresoras");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem1);
+
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -2354,19 +2546,23 @@ public class Pedidos extends javax.swing.JFrame {
     private void btnGenerarPdfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPdfActionPerformed
         if (JOptionPane.showConfirmDialog(dialogEtiqueta, "¿Generar las Etiquetas?", "WARNING",
             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            logger.info("Vamos a generar las etiquetas");
             this.url_etiquetas = null;
             btnGenerarPdf.setEnabled(false);
             int respuestaEtiqueta = 500;
             try {
                 respuestaEtiqueta = request.setGenerarPedidos();
             } catch (Exception ex) {
+                logger.log(Level.INFO, "Error al generar las etiquetas fue {0}", respuestaEtiqueta);
                 Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 100 - Error al generar las etiquetas", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
             if(respuestaEtiqueta != 200){
+                logger.log(Level.INFO, "Error al generar las etiquetas fue {0}", respuestaEtiqueta);
                 JOptionPane.showMessageDialog(dialogEtiqueta, "Ocurrio un Error al intentar Generar las Etiquetas, intentalo de nuevo", "Error", JOptionPane.ERROR_MESSAGE);
             }else{
+               logger.info("Vamos a consultar las etiquetas");
                progressBar.setValue(0);
                progressBar.setVisible(true);
 
@@ -2376,6 +2572,7 @@ public class Pedidos extends javax.swing.JFrame {
                newThreadEtiquetas.start();
             }
         } else {
+            logger.info("Dimos que NO en generar etiquetas");
             System.out.println("Sin generar");
         }
         
@@ -2383,10 +2580,12 @@ public class Pedidos extends javax.swing.JFrame {
 
     private void donwloadPdfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_donwloadPdfActionPerformed
         // TODO add your handling code here:
+        logger.info("Vamos a descargar las etiquetas");
         if(this.url_etiquetas !=  null){
             Download desc = new Download(this.url_etiquetas, this.out);
             desc.run();
         }else{
+            logger.info("No se encontro el pdf de las etiquetas");
             JOptionPane.showMessageDialog(dialogEtiqueta, "Ningun Documento PDF Encontrado", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_donwloadPdfActionPerformed
@@ -2408,7 +2607,8 @@ public class Pedidos extends javax.swing.JFrame {
                 ((JButton)value).doClick();	
                 JButton boton = (JButton) value;	
                 if("calcular".equals(boton.getName())){	
-                    System.out.println("Clic en btn calcular row: " + row + ", Column: "+column);	
+                    System.out.println("Clic en btn calcular row: " + row + ", Column: "+column);
+                    logger.log(Level.INFO, "Clic en btn calcular row: {0}, Column: {1}", new Object[]{row, column});
                 }	
             }
             
@@ -2454,35 +2654,20 @@ public class Pedidos extends javax.swing.JFrame {
         }	
     }//GEN-LAST:event_tableDataMouseClicked
 
-    private void orderTextKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_orderTextKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
-            verificarTrackingPedido();
-        }
-    }//GEN-LAST:event_orderTextKeyPressed
-
-    private void skuTextKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_skuTextKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
-            verificarSKUPedido();
-        }
-    }//GEN-LAST:event_skuTextKeyPressed
-
-    private void positionTextKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_positionTextKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
-            verificarPosition();
-        }
-    }//GEN-LAST:event_positionTextKeyPressed
-
     private void generarPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generarPedidosActionPerformed
         this.generarPedidos.setEnabled(false);
+        logger.info("Click en Vamos a generar los pedidos");
         if(this.session_activa){
             String response;
             try {
                 response = request.generarPedidos(this.sesion.getSessionToken());
                 if("200".equals(response)){
+                    logger.info("Pedidos generados");
                     JOptionPane.showMessageDialog(dialogEtiqueta, "Pedidos Generados", "", JOptionPane.INFORMATION_MESSAGE);
                     setTable("","","","");
                     this.generarPedidos.setEnabled(true);
                 }else{
+                    logger.log(Level.INFO, "Error al generar los pedidos {0}", response);
                     JOptionPane.showMessageDialog(dialogEtiqueta, response, "Alerta", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (Exception ex) {
@@ -2545,6 +2730,7 @@ public class Pedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_menuSecStateChanged
 
     private void consolidadoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consolidadoBtnActionPerformed
+        logger.log(Level.INFO, "Vamos a mandatr a consolidado la orden {0}", this.order_actual_id);
         this.ampmBtn.setEnabled(false);
         this.fedexBtn.setEnabled(false);
         this.paquexBtn.setEnabled(false);
@@ -2566,26 +2752,12 @@ public class Pedidos extends javax.swing.JFrame {
         this.formConsolidado.setVisible(true);
     }//GEN-LAST:event_consolidadoBtnActionPerformed
     
-    private void ordenMTFInputKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ordenMTFInputKeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
-            if(!"".equals(this.ordenMTFInput.getText().replaceAll("\\s+",""))){
-                iniciarHacerEnvios();
-                if(esConsolidadoTextBox.isSelected()){
-                    verificarConsolidado();
-                }else{
-                    verificarOrden(this.ordenMTFInput.getText().replaceAll("\\s+",""));
-                }
-            }else{
-                JOptionPane.showMessageDialog(dialogEtiqueta, "Ingresa un valor correcto.", "Alerta", JOptionPane.WARNING_MESSAGE);
-            }
-        }
-    }//GEN-LAST:event_ordenMTFInputKeyPressed
-
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void paqueteriaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paqueteriaBtnActionPerformed
+        logger.log(Level.INFO, "Click en paqueteria para la orden {0}", this.order_actual_id);
         if(this.candidato_ampm){
             this.ampmBtn.setEnabled(true);
         }
@@ -2599,6 +2771,7 @@ public class Pedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_paqueteriaBtnActionPerformed
 
     private void ampmBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ampmBtnActionPerformed
+        logger.log(Level.INFO, "Click en AMPM para la orden {0}", this.order_actual_id);
         enabledPaquex("AMPM");
         if(!"sin_pais".equals(this.el_pais) && !"mexico".equals(this.el_pais)){
             JOptionPane.showMessageDialog(dialogEtiqueta, "No puedes crear una guia de Envio para un Envio Internacional", "Alerta", JOptionPane.WARNING_MESSAGE);
@@ -2621,6 +2794,7 @@ public class Pedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_ampmBtnActionPerformed
 
     private void paquexBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paquexBtnActionPerformed
+        logger.log(Level.INFO, "Click en Paquetexpress para la orden {0}", this.order_actual_id);
         verificarGuiaPrepagada("Paquetexpress");
         this.carrier_nombre_existente = "Paquetexpress";
         if(!esConsolidadoTextBox.isSelected()){
@@ -2630,6 +2804,7 @@ public class Pedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_paquexBtnActionPerformed
 
     private void fedexBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fedexBtnActionPerformed
+        logger.log(Level.INFO, "Click en Fedex para la orden {0}", this.order_actual_id);
         verificarGuiaPrepagada("FedEx");
         this.carrier_nombre_existente = "FedEx";
         if(!esConsolidadoTextBox.isSelected()){
@@ -2639,6 +2814,7 @@ public class Pedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_fedexBtnActionPerformed
 
     private void upsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upsBtnActionPerformed
+        logger.log(Level.INFO, "Click en UPS para la orden {0}", this.order_actual_id);
         verificarGuiaPrepagada("UPS");
         consultaRates("UPS");
         this.carrierNameExistente.setText("UPS");
@@ -2654,6 +2830,7 @@ public class Pedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_upsBtnActionPerformed
 
     private void dhlBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dhlBtnActionPerformed
+        logger.log(Level.INFO, "Click en DHL para la orden {0}", this.order_actual_id);
         verificarGuiaPrepagada("DHL");
         consultaRates("DHL");
         this.carrierNameExistente.setText("DHL");
@@ -2669,6 +2846,7 @@ public class Pedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_dhlBtnActionPerformed
 
     private void estafetaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_estafetaBtnActionPerformed
+        logger.log(Level.INFO, "Click en Estafeta para la orden {0}", this.order_actual_id);
         verificarGuiaPrepagada("Estafeta");
         consultaRates("Estafeta");
         this.carrierNameExistente.setText("Estafeta");
@@ -2721,6 +2899,7 @@ public class Pedidos extends javax.swing.JFrame {
                 eneabledFedex();
                 consultarDireccion("FedEx");
                 consultaPaquetes();
+                this.crear_guia_fedex = true;
                 consultaRates("FedEx");
                 this.formCrearGuiaFedex.setTitle("Generar Guia Fedex");
                 this.formCrearGuiaFedex.setSize(900, 815);
@@ -2971,6 +3150,22 @@ public class Pedidos extends javax.swing.JFrame {
         String email = jTextField67.getText() ;
         String municipio = jTextField64.getText() ;
         String asegurado = "false";
+        logger.log(Level.INFO, "Vamos a cotizar Fedex para {0}", this.order_actual_id);
+        logger.info(largo);
+        logger.info(ancho);
+        logger.info(alto);
+        logger.info(tipo_paquete);
+        logger.info(peso);
+        logger.info(estado);
+        logger.info(colonia);
+        logger.info(calle);
+        logger.info(no_ext);
+        logger.info(no_int);
+        logger.info(telefono);
+        logger.info(codigo_postal);
+        logger.info(destinatario);
+        logger.info(email);
+        logger.info(municipio);
         if(jCheckBox1.isSelected()){
             asegurado = "true";
         }
@@ -2985,10 +3180,12 @@ public class Pedidos extends javax.swing.JFrame {
                 JSONObject res = new JSONObject(response.toString());
                 JSONArray resCotizar = res.getJSONArray("result");
                 if(resCotizar.get(0).toString().equals("200")){
+                    logger.log(Level.INFO, "Se cotizo bien Fedex {0}", this.order_actual_id);
                     disabledPaquex();
                     formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                     this.jLabel121.setText("Costo de la Guia: $"+resCotizar.get(1));
                 }else{
+                    logger.log(Level.INFO, "Error al cotizar Fedex para{0} {1}", new Object[]{this.order_actual_id, resCotizar.get(1)});
                     formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                     cotizarGuia2.setEnabled(true);
                     JOptionPane.showMessageDialog(dialogEtiqueta, resCotizar.get(1), "Alerta", JOptionPane.WARNING_MESSAGE);
@@ -3009,6 +3206,7 @@ public class Pedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_cotizarGuia2ActionPerformed
 
     private void ConfirmarGuia2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfirmarGuia2ActionPerformed
+        logger.log(Level.INFO, "Vamos a crear guia para {0}", this.order_actual_id);
         formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         ConfirmarGuia2.setEnabled(false);
         String largo = jTextField69.getText();
@@ -3038,40 +3236,55 @@ public class Pedidos extends javax.swing.JFrame {
             
             try {
                 if(this.carrier_nombre_existente.equals("AMPM")){
+                    logger.log(Level.INFO, "Vamos a crear guia ampm para {0}", this.order_actual_id);
                     String[] responseAmpm = request.crearguiaAmpm(largo, ancho, alto, tipo_paquete, peso, estado, colonia, calle, no_ext, no_int, telefono, codigo_postal, destinatario, email, municipio, this.order_actual_id, this.sesion.getSessionToken());
                     System.out.println(Arrays.toString(responseAmpm));
                     if(responseAmpm[0].equals("200")){
+                        logger.info("Se creo bien la guia AMPM");
                         String num_guia = responseAmpm[4];
                         String file_name = responseAmpm[1];
                         String file_url = responseAmpm[2];
+                        logger.info(num_guia);
+                        logger.info(file_name);
+                        logger.info(file_url);
+                        logger.info("Vamos a guardar guia");
                         int respuiestaGuia = guardarGuia("Economico", this.order_actual_id, num_guia, this.carrier_nombre_existente, peso, alto, ancho, largo, this.paqueteria_diferente, file_name);
                         if(respuiestaGuia == 200){
+                            logger.info("Se guardo bien la guia, vamos a imprimir el PDF");
                             guardarPDF(file_url, file_name);
                             JOptionPane.showMessageDialog(dialogEtiqueta, "La guia se guardo correctamente", "Success", JOptionPane.INFORMATION_MESSAGE);
                             formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                             formCrearGuia.setVisible(false);
                             iniciarHacerEnvios();
                         }else{
+                            logger.info("Error al guardar la guia");
                             formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                             ConfirmarGuia2.setEnabled(true);
                             JOptionPane.showMessageDialog(dialogEtiqueta, "Error al registrar la guia en el Sistema", "Error", JOptionPane.ERROR_MESSAGE);
                         }      
                     }else{
+                        logger.log(Level.INFO, "Error al crear AMPM para{0} {1}", new Object[]{this.order_actual_id, responseAmpm[1]});
                         formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                         ConfirmarGuia2.setEnabled(true);
                         JOptionPane.showMessageDialog(dialogEtiqueta, responseAmpm[1], "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
                 if(this.carrier_nombre_existente.equals("Paquetexpress")){
+                    logger.log(Level.INFO, "Vamos a crear guia paquetexpress para {0}", this.order_actual_id);
                     StringBuilder response = request.crearguiaPaquex(largo, ancho, alto, tipo_paquete, peso, estado, colonia, calle, no_ext, no_int, telefono, codigo_postal, destinatario, email, municipio, asegurado, this.order_actual_id);
                     if(response != null){
                         JSONObject res = new JSONObject(response.toString());
                         JSONArray resCrear = res.getJSONArray("result");
                         System.out.println(resCrear);
                         if(resCrear.get(0).toString().equals("200")){
+                            logger.info("Se creo bien la guia paquex");
                             String num_guia = resCrear.get(3).toString();
                             String file_name = resCrear.get(2).toString();
                             String file_url = resCrear.get(1).toString();
+                            logger.info(num_guia);
+                            logger.info(file_name);
+                            logger.info(file_url);
+                            logger.info("Vamos a guardar guia");
                             int respuiestaGuia = guardarGuia("Economico", this.order_actual_id, num_guia, this.carrier_nombre_existente, peso, alto, ancho, largo, this.paqueteria_diferente, file_name);
                             if(respuiestaGuia == 200){
                                 guardarPDF(file_url, file_name);
@@ -3079,11 +3292,13 @@ public class Pedidos extends javax.swing.JFrame {
                                 iniciarHacerEnvios();
                                 formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                             }else{
+                                logger.info("Error al guardar la guia");
                                 ConfirmarGuia2.setEnabled(true);
                                 formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                                 JOptionPane.showMessageDialog(dialogEtiqueta, "Error al registrar la guia en el Sistema", "Error", JOptionPane.ERROR_MESSAGE);
                             }                    
                         }else{
+                            logger.log(Level.INFO, "Error al crear paquex para{0} {1}", new Object[]{this.order_actual_id, resCrear.get(1)});
                             formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                             ConfirmarGuia2.setEnabled(true);
                             JOptionPane.showMessageDialog(dialogEtiqueta, resCrear.get(1), "Error", JOptionPane.ERROR_MESSAGE);
@@ -3311,7 +3526,93 @@ public class Pedidos extends javax.swing.JFrame {
         jTextField4.setText("");
         setTable(seller, seller_sku, num_orden, orden_mktf);
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        DefaultComboBoxModel termica1 = new DefaultComboBoxModel(new String[] {});
+        DefaultComboBoxModel termica2 = new DefaultComboBoxModel(new String[] {});
+        DefaultComboBoxModel pdfnormal = new DefaultComboBoxModel(new String[] {});
+        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+        System.out.println("Number of print services: " + printServices.length);
+        for(PrintService printService : printServices) {
+            System.out.println(printService.getName());
+            String name = printService.getName();
+            termica1.addElement(name);
+            termica2.addElement(name);
+            pdfnormal.addElement(name);
+        }
+        
+        jComboBox7.setModel(termica1);
+        jComboBox2.setModel(termica2);
+        jComboBox8.setModel(pdfnormal);
+        
+        jComboBox7.setSelectedItem(this.impresoraTermica1);
+        jComboBox2.setSelectedItem(this.impresoraTermica2);
+        jComboBox8.setSelectedItem(this.impresoraPDF);
+        
+        this.impresorasConfig.setTitle("Generar Guia AMPM");
+        this.impresorasConfig.setSize(600, 350);
+        this.impresorasConfig.setLocationRelativeTo(null);
+        this.impresorasConfig.setAlwaysOnTop (true);
+        this.impresorasConfig.setModalityType (ModalityType.APPLICATION_MODAL);
+        this.impresorasConfig.setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        this.impresoraTermica1 = jComboBox7.getSelectedItem().toString();
+        this.impresoraTermica2 = jComboBox2.getSelectedItem().toString();
+        this.impresoraPDF = jComboBox8.getSelectedItem().toString();
+        System.out.println("Las nuevas impresoras son");
+        System.out.println(this.impresoraTermica1);
+        System.out.println(this.impresoraTermica2);
+        System.out.println(this.impresoraPDF);
+        logger.info("Las nuevas impresoras son");
+        logger.info(this.impresoraTermica1);
+        logger.info(this.impresoraTermica2);
+        logger.info(this.impresoraPDF);
+        this.impresorasConfig.setVisible(false);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        this.impresorasConfig.setVisible(false);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void envioTablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_envioTablaMouseClicked
+        int column = tableData.getColumnModel().getColumnIndexAtX(evt.getX());	
+        int row = evt.getY()/tableData.getRowHeight();	
+        this.row_active = row;
+        int rec = this.tableData.getSelectedRow();
+
+        if(row < tableData.getRowCount() && row >= 0 && column < tableData.getColumnCount() && column >= 0 ){	
+            Object value = tableData.getValueAt(row, column);	
+            if(value instanceof JButton){	
+                ((JButton)value).doClick();	
+                JButton boton = (JButton) value;	
+                if("cancelar_guia".equals(boton.getName())){	
+                    System.out.println("Clic en btn calcular row: " + row + ", Column: "+column);
+                    logger.log(Level.INFO, "Clic en btn calcular row: {0}, Column: {1}", new Object[]{row, column});
+                    logger.info("Vamos a cancelar un Envio");
+                }	
+            }
+            
+            if(value instanceof JButton){	
+                ((JButton)value).doClick();	
+                JButton boton = (JButton) value;	
+                if("cancelar_guia".equals(boton.getName())){   
+                    String seller_name = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Seller").getModelIndex())).toString();
+                    String num_order = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("No. Orden").getModelIndex())).toString();
+                    String order_mktf = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Orden Marketful").getModelIndex())).toString();
+                    if(JOptionPane.showConfirmDialog(dialogEtiqueta, "¿Cancelar la guia de la orden "+num_order+ " de "+seller_name+"?", "WARNING",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+                        cancelarGuia(num_order);
+                    }
+                }	
+            }
+            
+        }
+    }//GEN-LAST:event_envioTablaMouseClicked
     
+    public void cancelarGuia(String order_id){
+        
+    }
     public void disabledFedex(){
         jTextField36.setEditable(false);
         jTextField37.setEditable(false);
@@ -3436,16 +3737,16 @@ public class Pedidos extends javax.swing.JFrame {
     }
     
     public void imprimirPDFTermica(String file_name){
-        String impresora = "TSC TE200";
-        if(this.sesion.getSessionUserId() == 237){
-            System.out.println("vamos con red");
-            impresora = "\\\\Laptop-h3109let\\tsc te200";
-        }
-        if(this.sesion.getSessionUserId() == 147){
-            System.out.println("vamos con red");
-            impresora = "\\\\Laptop-h3109let\\TSC TE200";
-        }
-        //impresora = "OneNote for Windows 10"; // Borrar despues de pruebas
+//        String impresora = "TSC TE200";
+//        if(this.sesion.getSessionUserId() == 237){
+//            System.out.println("vamos con red");
+//            impresora = "\\\\Laptop-h3109let\\tsc te200";
+//        }
+//        if(this.sesion.getSessionUserId() == 147){
+//            System.out.println("vamos con red");
+//            impresora = "\\\\Laptop-h3109let\\TSC TE200";
+//        }
+        String impresora = this.impresoraTermica1;
         PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
         System.out.println("Number of print services: " + printServices.length);
         Boolean se_puede = false;
@@ -3491,16 +3792,16 @@ public class Pedidos extends javax.swing.JFrame {
     }
     
     public void imprimirPDFTermica4x8(String file_name){
-        String impresora = "TSC TE200";
-        if(this.sesion.getSessionUserId() == 237){
-            System.out.println("vamos con red");
-            impresora = "\\\\Laptop-h3109let\\tsc te200";
-        }
-        if(this.sesion.getSessionUserId() == 147){
-            System.out.println("vamos con red");
-            impresora = "\\\\Laptop-h3109let\\TSC TE200";
-        }
-        //impresora = "OneNote for Windows 10"; // Borrar despues de pruebas
+//        String impresora = "TSC TE200";
+//        if(this.sesion.getSessionUserId() == 237){
+//            System.out.println("vamos con red");
+//            impresora = "\\\\Laptop-h3109let\\tsc te200";
+//        }
+//        if(this.sesion.getSessionUserId() == 147){
+//            System.out.println("vamos con red");
+//            impresora = "\\\\Laptop-h3109let\\TSC TE200";
+//        }
+        String impresora = this.impresoraTermica2;
         PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
         System.out.println("Number of print services: " + printServices.length);
         Boolean se_puede = false;
@@ -3555,9 +3856,9 @@ public class Pedidos extends javax.swing.JFrame {
     }
     
     public void imprimirPDF(String file_name){
-        String impresora = "HP LaserJet M15w (94EC54)";
-        impresora = "HP LaserJet M15w";
-        //impresora = "OneNote for Windows 10"; // Borrar despues de pruebas
+//        String impresora = "HP LaserJet M14-M17 PCLmS";
+//        String impresora2 = "NP94EC54";
+        String impresora = this.impresoraPDF;
         PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
         System.out.println("Number of print services: " + printServices.length);
         Boolean se_puede = false;
@@ -3614,6 +3915,8 @@ public class Pedidos extends javax.swing.JFrame {
     
     public void verificarOrden(String no_paquete){
         this.ordenMTFInput.setText("");
+        this.economico = false;
+        this.next_day = false;
         try {
             StringBuilder response = request.consultarPaquete(no_paquete);
             JSONObject res = new JSONObject(response.toString());
@@ -3637,6 +3940,13 @@ public class Pedidos extends javax.swing.JFrame {
                 }
                 if("200".equals(resPaquete.get(7).toString())){
                     this.candidato_ampm = true;
+                }
+                this.tipo_envio_actual = resPaquete.get(4).toString();
+                if(this.tipo_envio_actual.equals("economico")){
+                    this.economico = true;
+                }
+                if(this.tipo_envio_actual.equals("dia_siguiente")){
+                    this.next_day = true;
                 }
                 if("guia_termica".equals(resPaquete.get(1).toString())){
                     if(JOptionPane.showConfirmDialog(dialogEtiqueta, "Esta Orden tiene una guia Cargada ¿Deseas imprimirla?", "WARNING",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
@@ -3823,11 +4133,41 @@ public class Pedidos extends javax.swing.JFrame {
                 model.addElement(tipo_envios.get(i).toString());
 
             }
+            System.out.println("tipo de envio es "+this.tipo_envio_actual);
+            if(this.tipo_envio_actual.equals("dia_siguiente") && model.getIndexOf("Dia Siguiente") == -1){
+                model.addElement("Dia Siguiente");
+            }
+            if(this.tipo_envio_actual.equals("economico") && model.getIndexOf("Economico") == -1){
+                model.addElement("Economico");
+            }
+            
+            if(this.next_day && model.getIndexOf("Economico") != -1){
+                int el_index = model.getIndexOf("Economico");
+                model.removeElementAt(el_index);
+                if(model.getIndexOf("Dia Siguiente") != -1){
+                    model.setSelectedItem("Dia Siguiente");
+                }
+            }
+            
+            if(this.economico && model.getIndexOf("Dia Siguiente") != -1){
+                int el_index = model.getIndexOf("Dia Siguiente");
+                model.removeElementAt(el_index);
+                if(model.getIndexOf("Economico") != -1){
+                    model.setSelectedItem("Economico");
+                }
+            }
+            
+            if(this.crear_guia_fedex &&  model.getIndexOf("Internacional") != -1){
+                int el_indexInter = model.getIndexOf("Internacional");
+                model.removeElementAt(el_indexInter);
+            }
+            
             jComboBox4.setModel(model);
             tiposEnvio1.setModel(model);
         } catch (Exception ex) {
             Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.crear_guia_fedex = false;
     }
     
     public void verificarConsolidado(){
@@ -3836,6 +4176,10 @@ public class Pedidos extends javax.swing.JFrame {
     }
     
     public void iniciarHacerEnvios(){
+        this.jLabel23.setText("");
+        this.jLabel16.setText("");
+        this.jLabel17.setText("");
+        
         this.carrier_nombre_existente = "";
         this.paqueteriaBtn.setEnabled(false);
 //        this.consolidadoBtn.setEnabled(false);
@@ -4197,17 +4541,23 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JDialog formGuiaExistente;
     private javax.swing.JButton generarPedidos;
     private javax.swing.JButton guiaExistenteBtn;
+    private javax.swing.JDialog impresorasConfig;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JComboBox<String> jComboBox4;
     private javax.swing.JComboBox<String> jComboBox5;
     private javax.swing.JComboBox<String> jComboBox6;
+    private javax.swing.JComboBox<String> jComboBox7;
+    private javax.swing.JComboBox<String> jComboBox8;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -4248,6 +4598,11 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel4;
@@ -4296,6 +4651,7 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -4317,6 +4673,8 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
     private javax.swing.JSeparator jSeparator7;
@@ -4395,4 +4753,14 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JLabel userWelcome;
     private javax.swing.JButton willcallBtn;
     // End of variables declaration//GEN-END:variables
+
+    private static class AbstractActionImpl extends AbstractAction {
+
+        public AbstractActionImpl() {
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            //do nothing
+        }
+    }
 }

@@ -225,7 +225,7 @@ public class HttpRequest {
     
     public String[] verificarSKUPedido(String sku, String pedido_id) throws Exception {
 
-        String url_final = url_base + "pedidos/verificar_seller_sku_pedido_api?seller_sku="+sku+"&pedido_id="+pedido_id;
+        String url_final = url_base + "pedidos/verificar_seller_sku_pedido_api?seller_sku="+ URLEncoder.encode(sku, "utf-8")+"&pedido_id="+pedido_id;
 
         URL obj = new URL(url_final);
         
