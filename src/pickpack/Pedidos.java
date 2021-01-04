@@ -231,7 +231,7 @@ public class Pedidos extends javax.swing.JFrame {
         }
     };
     
-    public final void setTable(String seller, String seller_sku, String num_order, String orden_mktf){
+    public void setTable(String seller, String seller_sku, String num_order, String orden_mktf){
         lista.clear();
         model = new DefaultTableModel(null,titles){
             @Override
@@ -317,25 +317,20 @@ public class Pedidos extends javax.swing.JFrame {
 //        });
     }
     
-        public final void setTableEnvios(){
+    public void setTableEnvios(){
         listaEnvios.clear();
         modelEnvios = new DefaultTableModel(null,titlesEnvios){
             @Override
             public boolean isCellEditable(int row, int column){
-                if(column == 10){
-                   return true;
-                }else{
-                   return false;
-                }
+                return false;
 //                return false;
             }
         };
         
         envioTabla.setModel(modelEnvios);
-        envioTabla.setDefaultRenderer(Object.class, new Render());
+        envioTabla.setDefaultRenderer(Object.class, new RenderEnvios());
         envioTabla.setRowHeight(30);
-        JButton btn1 = new JButton("Cancelar Guia");
-        btn1.setName("cancelar_guia");
+            
         JButton btn3 = new JButton("Cancelar Guia");
         btn3.setName("cancelar_guia_disabled");
         btn3.setEnabled(false);
@@ -404,10 +399,12 @@ public class Pedidos extends javax.swing.JFrame {
                 
                 row[8] = elemento.getString("status");
                 if("guia_generada".equals(elemento.getString("status"))){
-                    row[9] = btn1;
+                    JButton btnCancelar = new JButton("Cancelar Guia");
+                    btnCancelar.setName("cancelar_guia"+elemento.getString("id"));
+                    row[9] = btnCancelar;
                 }else{
                     row[9] = btn3;
-                }          
+                }       
                 modelEnvios.addRow(row);
             }
             for (int i = 0; i <= 9; i++) {
@@ -567,6 +564,7 @@ public class Pedidos extends javax.swing.JFrame {
         jComboBox8 = new javax.swing.JComboBox<>();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        cancelar_guia = new javax.swing.JButton();
         menuSec = new javax.swing.JTabbedPane();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
@@ -1723,7 +1721,7 @@ public class Pedidos extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(impresorasConfigLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(impresorasConfigLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel29)
                             .addComponent(jComboBox8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(22, 109, Short.MAX_VALUE))
@@ -1734,6 +1732,8 @@ public class Pedidos extends javax.swing.JFrame {
                             .addComponent(jButton4))
                         .addContainerGap())))
         );
+
+        cancelar_guia.setText("jButton6");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -3573,20 +3573,24 @@ public class Pedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        this.impresorasConfig.setVisible(false);
+        this.impresorasConfig.setVisible(false); 
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void envioTablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_envioTablaMouseClicked
-        int column = tableData.getColumnModel().getColumnIndexAtX(evt.getX());	
-        int row = evt.getY()/tableData.getRowHeight();	
+        int column = envioTabla.getColumnModel().getColumnIndexAtX(evt.getX());	
+        int row = evt.getY()/envioTabla.getRowHeight();	
         this.row_active = row;
-        int rec = this.tableData.getSelectedRow();
+        int rec = this.envioTabla.getSelectedRow();
 
-        if(row < tableData.getRowCount() && row >= 0 && column < tableData.getColumnCount() && column >= 0 ){	
-            Object value = tableData.getValueAt(row, column);	
+        if(row < envioTabla.getRowCount() && row >= 0 && column < envioTabla.getColumnCount() && column >= 0 ){	
+            Object value = envioTabla.getValueAt(row, column);	
             if(value instanceof JButton){	
                 ((JButton)value).doClick();	
-                JButton boton = (JButton) value;	
+                JButton boton = (JButton) value;
+                String nombre_btn = boton.getName();
+                System.out.println("el boton es "+nombre_btn);
+                System.out.println("shipment es "+nombre_btn.replace("cancelar_guia", ""));
+                System.out.println(boton.getName());
                 if("cancelar_guia".equals(boton.getName())){	
                     System.out.println("Clic en btn calcular row: " + row + ", Column: "+column);
                     logger.log(Level.INFO, "Clic en btn calcular row: {0}, Column: {1}", new Object[]{row, column});
@@ -3598,9 +3602,9 @@ public class Pedidos extends javax.swing.JFrame {
                 ((JButton)value).doClick();	
                 JButton boton = (JButton) value;	
                 if("cancelar_guia".equals(boton.getName())){   
-                    String seller_name = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Seller").getModelIndex())).toString();
-                    String num_order = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("No. Orden").getModelIndex())).toString();
-                    String order_mktf = tableData.getValueAt(row,tableData.convertColumnIndexToView(tableData.getColumn("Orden Marketful").getModelIndex())).toString();
+                    String seller_name = envioTabla.getValueAt(row,envioTabla.convertColumnIndexToView(envioTabla.getColumn("Seller").getModelIndex())).toString();
+                    String num_order = envioTabla.getValueAt(row,envioTabla.convertColumnIndexToView(envioTabla.getColumn("No. Orden").getModelIndex())).toString();
+                    String order_mktf = envioTabla.getValueAt(row,envioTabla.convertColumnIndexToView(envioTabla.getColumn("Orden Marketful").getModelIndex())).toString();
                     if(JOptionPane.showConfirmDialog(dialogEtiqueta, "¿Cancelar la guia de la orden "+num_order+ " de "+seller_name+"?", "WARNING",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
                         cancelarGuia(num_order);
                     }
@@ -4520,6 +4524,7 @@ public class Pedidos extends javax.swing.JFrame {
     private javax.swing.JButton btnGenerarPdf;
     private javax.swing.JTextField canalFiltro;
     private javax.swing.JButton cancelarSurtido;
+    private javax.swing.JButton cancelar_guia;
     private javax.swing.JLabel cantidadSurtida;
     private javax.swing.JTextField carrierNameExistente;
     private javax.swing.JButton consolidadoBtn;
