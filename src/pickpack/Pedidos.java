@@ -2848,17 +2848,11 @@ public class Pedidos extends javax.swing.JFrame {
     private void estafetaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_estafetaBtnActionPerformed
         logger.log(Level.INFO, "Click en Estafeta para la orden {0}", this.order_actual_id);
         verificarGuiaPrepagada("Estafeta");
-        consultaRates("Estafeta");
-        this.carrierNameExistente.setText("Estafeta");
-        this.formGuiaExistente.setTitle("Guia Existente Estafeta");
-        this.formGuiaExistente.setSize(560, 412);
-        this.formGuiaExistente.setLocationRelativeTo(null);
-        this.formGuiaExistente.setAlwaysOnTop (true);
-        this.formGuiaExistente.setModalityType (ModalityType.APPLICATION_MODAL);
-        this.formGuiaExistente.setVisible(true);
-        jButton9.setEnabled(true);
-        this.crearGuiaBtn.setEnabled(false);
-        this.guiaExistenteBtn.setEnabled(false);
+        this.carrier_nombre_existente = "Estafeta";
+        if(!esConsolidadoTextBox.isSelected()){
+            this.crearGuiaBtn.setEnabled(true);
+        }
+        this.guiaExistenteBtn.setEnabled(true);
     }//GEN-LAST:event_estafetaBtnActionPerformed
 
     private void enviaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviaBtnActionPerformed
@@ -2902,6 +2896,23 @@ public class Pedidos extends javax.swing.JFrame {
                 this.crear_guia_fedex = true;
                 consultaRates("FedEx");
                 this.formCrearGuiaFedex.setTitle("Generar Guia Fedex");
+                jLabel56.setText("Crear Guia FedEx");
+                this.formCrearGuiaFedex.setSize(900, 815);
+                this.formCrearGuiaFedex.setLocationRelativeTo(null);
+                this.formCrearGuiaFedex.setAlwaysOnTop (true);
+                this.formCrearGuiaFedex.setModalityType (ModalityType.APPLICATION_MODAL);
+                this.formCrearGuiaFedex.setVisible(true);
+                this.tipo_de_paquete = "YOUR_PACKAGING";
+            }
+            System.out.println("La carrier presente es "+this.carrier_nombre_existente);
+            if("Estafeta".equals(this.carrier_nombre_existente)){
+                eneabledFedex();
+                consultarDireccion("FedEx");
+                consultaPaquetes();
+                this.crear_guia_fedex = true;
+                consultaRates("FedEx");
+                this.formCrearGuiaFedex.setTitle("Generar Guia Estafeta");
+                jLabel56.setText("Crear Guia Estafeta");
                 this.formCrearGuiaFedex.setSize(900, 815);
                 this.formCrearGuiaFedex.setLocationRelativeTo(null);
                 this.formCrearGuiaFedex.setAlwaysOnTop (true);
@@ -2947,6 +2958,18 @@ public class Pedidos extends javax.swing.JFrame {
             this.tipo_de_paquete = "ENVELOP";
             this.carrierNameExistente.setText("Paquetexpress");
             this.formGuiaExistente.setTitle("Guia Existente Paquetexpress");
+            this.formGuiaExistente.setSize(560, 412);
+            this.formGuiaExistente.setLocationRelativeTo(null);
+            this.formGuiaExistente.setAlwaysOnTop (true);
+            this.formGuiaExistente.setModalityType (ModalityType.APPLICATION_MODAL);
+            this.formGuiaExistente.setVisible(true);
+            jButton9.setEnabled(true);
+        }
+        
+        if("Estafeta".equals(this.carrier_nombre_existente)){
+            consultaRates("Estafeta");
+            this.carrierNameExistente.setText("Estafeta");
+            this.formGuiaExistente.setTitle("Guia Existente Estafeta");
             this.formGuiaExistente.setSize(560, 412);
             this.formGuiaExistente.setLocationRelativeTo(null);
             this.formGuiaExistente.setAlwaysOnTop (true);
@@ -3351,7 +3374,7 @@ public class Pedidos extends javax.swing.JFrame {
                 tipo_envio = "FEDEX_EXPRESS_SAVER";
             }
             try {
-                StringBuilder response = request.cotizarFedEx(tipo_envio, largo, ancho, alto, peso, estado, telefono, codigo_postal, destinatario, line_1, line_2, ciudad, this.order_actual_id);
+                StringBuilder response = request.cotizarFedEx(tipo_envio, largo, ancho, alto, peso, estado, telefono, codigo_postal, destinatario, line_1, line_2, ciudad, this.order_actual_id, this.carrier_nombre_existente);
                 JSONObject res = new JSONObject(response.toString());
                 JSONArray resCotizar = res.getJSONArray("result");
                 if(resCotizar.get(0).toString().equals("200")){
@@ -3386,7 +3409,7 @@ public class Pedidos extends javax.swing.JFrame {
         String peso = jTextField72.getText() ;
         String tipo_envio = jComboBox4.getSelectedItem().toString();
         try {
-            StringBuilder response = request.crearGuiaFedex(this.rate_id, this.order_actual_id);
+            StringBuilder response = request.crearGuiaFedex(this.rate_id, this.order_actual_id, this.carrier_nombre_existente);
             JSONObject res = new JSONObject(response.toString());
             JSONArray resCrear = res.getJSONArray("result");
             System.out.println(resCrear);
@@ -3394,7 +3417,11 @@ public class Pedidos extends javax.swing.JFrame {
                 String num_guia = resCrear.get(1).toString();
                 String file_name = resCrear.get(2).toString();
                 String file_url = resCrear.get(3).toString();
-                int respuiestaGuia = guardarGuia(tipo_envio, this.order_actual_id, num_guia, "FedEx", peso, alto, ancho, largo, this.paqueteria_diferente, file_name);
+                String la_pqueteria_new = "FedEx";
+                if(this.carrier_nombre_existente.equals("Estafeta")){
+                    la_pqueteria_new = "Estafeta";
+                }
+                int respuiestaGuia = guardarGuia(tipo_envio, this.order_actual_id, num_guia, la_pqueteria_new, peso, alto, ancho, largo, this.paqueteria_diferente, file_name);
                 if(respuiestaGuia == 200){
                     guardarPDF(file_url, file_name);
                     JOptionPane.showMessageDialog(dialogEtiqueta, "La guia se guardo correctamente", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -3819,12 +3846,12 @@ public class Pedidos extends javax.swing.JFrame {
         if(se_puede){
            System.out.println("Impresora encontrada");
             try {
-                PDDocument document = PDDocument.load(new File(file_name));
+                PDDocument document = PDDocument.load(new File("Guias/"+file_name));
                 PrintService myPrintService = findPrintService(impresora);
                 
                 PrinterJob job = PrinterJob.getPrinterJob();
                 Paper paper = new Paper();
-                paper.setSize(764, 482);
+                paper.setSize(704, 422);
                 System.out.println("width es "+paper.getWidth() );
                 paper.setImageableArea(-230, 0, paper.getWidth(), paper.getHeight()); // no margins
                 
@@ -3953,9 +3980,12 @@ public class Pedidos extends javax.swing.JFrame {
                     this.next_day = true;
                 }
                 if("guia_termica".equals(resPaquete.get(1).toString())){
-                    if(JOptionPane.showConfirmDialog(dialogEtiqueta, "Esta Orden tiene una guia Cargada ¿Deseas imprimirla?", "WARNING",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
-                        guardarPDF4x8(resPaquete.get(3).toString(), "Guia_termica_"+this.order_actual_id+".pdf");
-                    }
+//                    if(JOptionPane.showConfirmDialog(dialogEtiqueta, "Esta Orden tiene una guia Cargada ¿Deseas imprimirla?", "WARNING",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+//                        guardarPDF4x8(resPaquete.get(3).toString(), "Guia_termica_"+this.order_actual_id+".pdf");
+//                    }
+                    JOptionPane.showMessageDialog(dialogEtiqueta,"Esta orden tiene una Guia cargada, asegurate de imprimirla" , "Alerta", JOptionPane.WARNING_MESSAGE);
+                }else if("guia_normal".equals(resPaquete.get(1).toString())){
+                    JOptionPane.showMessageDialog(dialogEtiqueta,"Esta orden tiene una Guia cargada, asegurate de imprimirla" , "Alerta", JOptionPane.WARNING_MESSAGE);
                 }
             }else{
                 JOptionPane.showMessageDialog(dialogEtiqueta,resPaquete.get(1) , "Alerta", JOptionPane.WARNING_MESSAGE);

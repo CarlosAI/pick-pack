@@ -934,9 +934,12 @@ public class HttpRequest {
         return resultado;
     }
     
-    public StringBuilder cotizarFedEx(String tipo_envio, String largo, String ancho, String alto, String peso, String estado, String telefono, String codigo_postal, String destinatario, String line_1, String line_2, String ciudad, String orden_id) throws Exception {
-
+    public StringBuilder cotizarFedEx(String tipo_envio, String largo, String ancho, String alto, String peso, String estado, String telefono, String codigo_postal, String destinatario, String line_1, String line_2, String ciudad, String orden_id, String paqueteria) throws Exception {
+        
         String url_final = url_base + "labels/cotizar_guia_fedex_api";
+        if(paqueteria.equals("Estafeta")){
+            url_final = url_base + "labels/cotizar_guia_estafeta_api";
+        }
         
         String urlParameters = "?tipo_envio="+tipo_envio+"&largo="+URLEncoder.encode(largo, "utf-8")+"&ancho="+URLEncoder.encode(ancho, "utf-8")+"&alto="+URLEncoder.encode(alto, "utf-8")+"&peso="+URLEncoder.encode(peso, "utf-8")+"&estado="+URLEncoder.encode(estado, "utf-8")+"&telefono="+URLEncoder.encode(telefono, "utf-8")+"&codigo_postal="+URLEncoder.encode(codigo_postal, "utf-8")+"&destinatario="+URLEncoder.encode(destinatario, "utf-8")+"&line_1="+URLEncoder.encode(line_1, "utf-8")+"&line_2="+URLEncoder.encode(line_2, "utf-8")+"&ciudad="+URLEncoder.encode(ciudad, "utf-8")+"&orden_id="+URLEncoder.encode(orden_id, "utf-8");
         
@@ -970,10 +973,12 @@ public class HttpRequest {
         return response;
     }
     
-    public StringBuilder crearGuiaFedex(String rate_id, String order_id) throws Exception {
+    public StringBuilder crearGuiaFedex(String rate_id, String order_id, String paqueteria) throws Exception {
 
         String url_final = url_base + "labels/crear_guia_fedex_api?fedex_rate_id="+rate_id+"&orden="+order_id;
-  
+        if(paqueteria.equals("Estafeta")){
+            url_final = url_base + "labels/crear_guia_estafeta_api?fedex_rate_id="+rate_id+"&orden="+order_id;
+        }
         URL obj = new URL(url_final);
         
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
