@@ -248,6 +248,8 @@ public class Pedidos extends javax.swing.JFrame {
         btn1.setName("surtir_pedido");
         JButton btn2 = new JButton("Calcular");
         btn2.setName("calcular");
+        JButton btn3 = new JButton("Calcular");
+        btn3.setEnabled(false);
         JTextField txt1 = new JTextField();
         tableData.setModel(model);
         tableData.setDefaultRenderer(Object.class, new Render());
@@ -284,7 +286,12 @@ public class Pedidos extends javax.swing.JFrame {
                 row[10] = elemento.getString("posicion_1_name");
 //                JTextField jt = new JTextField();
                 row[11] = btn1;
-                row[12] = btn2;             
+                if(elemento.getString("seller_name").equals("Marketful")){
+                    row[12] = btn3;
+                }else{
+                    row[12] = btn2;
+                }
+                             
 //                model.addRow(new Object[]{ "wfw", "title1", "start", "stop", "pause", "status", "status", "status", "status", "status", "status" });
                 model.addRow(row);
             }
@@ -332,7 +339,7 @@ public class Pedidos extends javax.swing.JFrame {
         envioTabla.setRowHeight(30);
             
         JButton btn3 = new JButton("Cancelar Guia");
-        btn3.setName("cancelar_guia_disabled");
+        btn3.setName("cancelarr_guia_disabled");
         btn3.setEnabled(false);
         try {
             StringBuilder response = request.getEnvios(this.filtroSeller, this.filtroOrden, this.filtroNumOrden, this.filtroCarrier, this.filtroCanal, this.currentPage, this.filtroStatus);
@@ -3324,7 +3331,7 @@ public class Pedidos extends javax.swing.JFrame {
                             logger.log(Level.INFO, "Error al crear paquex para{0} {1}", new Object[]{this.order_actual_id, resCrear.get(1)});
                             formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                             ConfirmarGuia2.setEnabled(true);
-                            JOptionPane.showMessageDialog(dialogEtiqueta, resCrear.get(1), "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(dialogEtiqueta, resCrear.get(1).toString(), "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }else{
                         formCrearGuia.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -3385,7 +3392,7 @@ public class Pedidos extends javax.swing.JFrame {
                 }else{
                     formCrearGuiaFedex.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                     cotizarGuia1.setEnabled(true);
-                    JOptionPane.showMessageDialog(dialogEtiqueta, resCotizar.get(1), "Alerta", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(dialogEtiqueta, resCotizar.get(1).toString(), "Alerta", JOptionPane.WARNING_MESSAGE);
                 }
             } catch (Exception ex) {
                 formCrearGuiaFedex.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -3434,7 +3441,7 @@ public class Pedidos extends javax.swing.JFrame {
                 }                    
             }else{
                 formCrearGuiaFedex.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                JOptionPane.showMessageDialog(dialogEtiqueta, resCrear.get(1), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(dialogEtiqueta, resCrear.get(1).toString(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception ex) {
             formCrearGuiaFedex.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -3608,17 +3615,18 @@ public class Pedidos extends javax.swing.JFrame {
         int row = evt.getY()/envioTabla.getRowHeight();	
         this.row_active = row;
         int rec = this.envioTabla.getSelectedRow();
-
+        String nombre_btn = "";
         if(row < envioTabla.getRowCount() && row >= 0 && column < envioTabla.getColumnCount() && column >= 0 ){	
             Object value = envioTabla.getValueAt(row, column);	
             if(value instanceof JButton){	
                 ((JButton)value).doClick();	
                 JButton boton = (JButton) value;
-                String nombre_btn = boton.getName();
+                nombre_btn = boton.getName();
                 System.out.println("el boton es "+nombre_btn);
                 System.out.println("shipment es "+nombre_btn.replace("cancelar_guia", ""));
                 System.out.println(boton.getName());
-                if("cancelar_guia".equals(boton.getName())){	
+                System.out.println(boton.getName().substring(0, 13));
+                if("cancelar_guia".equals(boton.getName().substring(0, 13))){	
                     System.out.println("Clic en btn calcular row: " + row + ", Column: "+column);
                     logger.log(Level.INFO, "Clic en btn calcular row: {0}, Column: {1}", new Object[]{row, column});
                     logger.info("Vamos a cancelar un Envio");
@@ -3628,21 +3636,54 @@ public class Pedidos extends javax.swing.JFrame {
             if(value instanceof JButton){	
                 ((JButton)value).doClick();	
                 JButton boton = (JButton) value;	
-                if("cancelar_guia".equals(boton.getName())){   
+                if("cancelar_guia".equals(boton.getName().substring(0, 13))){   
                     String seller_name = envioTabla.getValueAt(row,envioTabla.convertColumnIndexToView(envioTabla.getColumn("Seller").getModelIndex())).toString();
                     String num_order = envioTabla.getValueAt(row,envioTabla.convertColumnIndexToView(envioTabla.getColumn("No. Orden").getModelIndex())).toString();
                     String order_mktf = envioTabla.getValueAt(row,envioTabla.convertColumnIndexToView(envioTabla.getColumn("Orden Marketful").getModelIndex())).toString();
-                    if(JOptionPane.showConfirmDialog(dialogEtiqueta, "¿Cancelar la guia de la orden "+num_order+ " de "+seller_name+"?", "WARNING",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
-                        cancelarGuia(num_order);
-                    }
+                    String shipment_id = boton.getName().replace("cancelar_guia", "");
+                    verificarcancelarGuia(shipment_id, num_order, seller_name);
                 }	
             }
             
         }
     }//GEN-LAST:event_envioTablaMouseClicked
     
-    public void cancelarGuia(String order_id){
-        
+    public void verificarcancelarGuia(String shipment_id, String num_orden, String seller_name){
+        try {
+            StringBuilder response = request.verificarGuiaRepetida(shipment_id);
+            JSONObject res = new JSONObject(response.toString());
+            JSONArray resGuia = res.getJSONArray("result");
+            if("200".equals(resGuia.get(0).toString())){
+                if(JOptionPane.showConfirmDialog(dialogEtiqueta, "¿Cancelar la guia de la orden "+num_orden+ " de "+seller_name+"?", "WARNING",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+                   cancelarGuia(shipment_id);
+                }
+            }else{
+                if("404".equals(resGuia.get(0).toString())){
+                    if(JOptionPane.showConfirmDialog(dialogEtiqueta, "Existe mas de una orden con este numero de guia, ¿Deseas cancelar las guias de las ordenes: "+resGuia.get(1).toString(), "WARNING",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+                        cancelarGuia(shipment_id);
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(dialogEtiqueta, resGuia.get(1).toString(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error interno Marketful al cancelar el envio", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void cancelarGuia(String shipment_id){
+        envioTabla.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));        
+        try {
+            String response = request.guardarGuia(shipment_id, this.sesion.getSessionToken());
+            JOptionPane.showMessageDialog(dialogEtiqueta, response, "Succes", JOptionPane.INFORMATION_MESSAGE);
+            setTableEnvios();
+            envioTabla.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error interno Marketful al cancelar el envio", "Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+            envioTabla.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        }
     }
     public void disabledFedex(){
         jTextField36.setEditable(false);
@@ -3988,7 +4029,7 @@ public class Pedidos extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(dialogEtiqueta,"Esta orden tiene una Guia cargada, asegurate de imprimirla" , "Alerta", JOptionPane.WARNING_MESSAGE);
                 }
             }else{
-                JOptionPane.showMessageDialog(dialogEtiqueta,resPaquete.get(1) , "Alerta", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(dialogEtiqueta,resPaquete.get(1).toString() , "Alerta", JOptionPane.WARNING_MESSAGE);
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error al consultar la informacion de la Orden.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -4297,9 +4338,17 @@ public class Pedidos extends javax.swing.JFrame {
                 }
             }else if("201".equals(response[0])){
                 this.es_consolidado = true;
-                this.positionText.setText("");
                 if( Integer.parseInt(response[2]) > 0){
-                    this.sellerSKU.requestFocus();
+                    this.pedido_iniciado = this.pedido_id;
+                    this.cantidad_pedido = Integer.parseInt(response[2]);
+                    this.positionName.setText(this.positionText.getText());
+                    this.positionText.requestFocus(false);
+                    this.positionText.setEditable(false);
+                    this.positionText.setEnabled(false);
+                    this.positionText.setText("");
+                    this.skuText.setEnabled(true);
+                    this.skuText.setEditable(true);
+                    this.skuText.requestFocus(true);
                 }else{
                     this.positionText.setText("");
                     JOptionPane.showMessageDialog(dialogEtiqueta, "Este pedido ya fue surtido", "Alerta", JOptionPane.WARNING_MESSAGE);
@@ -4366,7 +4415,7 @@ public class Pedidos extends javax.swing.JFrame {
             }else if("201".equals(response)){
                 JOptionPane.showMessageDialog(dialogEtiqueta, "Esta orden tiene pedidos aun en BackOrders", "Alerta", JOptionPane.INFORMATION_MESSAGE);
             }else{
-                JOptionPane.showMessageDialog(dialogEtiqueta, response, "Alerta", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(dialogEtiqueta, "Error al surtir el paquete del consolidado: "+response, "Alerta", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(dialogEtiqueta, "Error Code: 201 - Error interno al surtir el pedido.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -4381,8 +4430,9 @@ public class Pedidos extends javax.swing.JFrame {
                 response = request.verificarConsolidado(this.orderText.getText(), this.pedido_id);
                 if("200".equals(response)){
                     if(this.session_activa){
+                        String el_consolidado_id = this.orderText.getText();
                         this.orderText.setText("");
-                        registrarConsolidado(this.orderText.getText());
+                        registrarConsolidado(el_consolidado_id);
                     }else{
                         this.orderText.setText("");
                         this.orderText.requestFocus(true);
@@ -4391,7 +4441,7 @@ public class Pedidos extends javax.swing.JFrame {
                 }else{
                     this.orderText.setText("");
                     this.orderText.requestFocus(true);
-                    JOptionPane.showMessageDialog(dialogEtiqueta, response, "Alerta", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(dialogEtiqueta, "Error al surtir el paquete del consolidado: "+response, "Alerta", JOptionPane.WARNING_MESSAGE);
                 }
             }else{
                 response = request.verificarTrackingPedido(this.orderText.getText(), this.pedido_id);

@@ -413,8 +413,8 @@ public class HttpRequest {
      
     public String registrarConsolidadoApi(String consolidado_id, String pedido_id, String token) throws Exception {
         System.out.println("Vamos a surtir pedido");
-        String url_final = url_base + "pedidos/sacar_de_posicion_api?consolidado_id="+consolidado_id+"&pedido_id="+pedido_id;
-
+        String url_final = url_base + "pedidos/registrar_consolidado_api?consolidado_id="+consolidado_id+"&pedido_id="+pedido_id;
+        System.out.println(url_final);
         URL obj = new URL(url_final);
         
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -1001,5 +1001,82 @@ public class HttpRequest {
         in.close();
        
         return response;
+    }
+    
+    public StringBuilder verificarGuiaRepetida(String shipment_id) throws Exception {
+
+        String url_final = url_base + "shipments/verificar_guia_repetida_api?shipment_id="+shipment_id;
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'GET' request to URL : " + url_final);
+
+        BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+       
+        return response;
+    }
+    
+    public String guardarGuia(String shipment_id, String token) throws Exception {
+
+        String url_final = url_base + "shipments/cancelar_guia_api?shipment_id="+shipment_id;
+
+        URL obj = new URL(url_final);
+        
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json"); 
+        con.setRequestProperty("Accept", "application/json");
+        con.setRequestProperty("Authorization", "Bearer "+token);
+        con.setDoOutput(true);
+
+       int responseCode = con.getResponseCode();
+        String resultado = "400";
+        if(responseCode == 200){
+            System.out.println("\nSending 'GET' request to URL : " + url_final);
+            BufferedReader in = new BufferedReader( new InputStreamReader(con.getInputStream(), "UTF-8"));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            JSONObject res = new JSONObject(response.toString());
+            System.out.println("here");
+            System.out.println(res);
+            if(res.has("status")){
+                System.out.println("Si tiene");
+                resultado = res.getString("errors");
+            }else{
+                System.out.println("no tiene");
+                JSONArray resCrearGuia = res.getJSONArray("result");
+                if(resCrearGuia.get(0).toString().equals("200")){
+                    resultado = resCrearGuia.get(1).toString();
+                }else{
+                    resultado = resCrearGuia.get(1).toString();
+                }
+            }
+            System.out.println(resultado);
+        }else if(responseCode == 403){
+            resultado = "Sesion Expirada";
+        }
+        return resultado;
     }
 }
